@@ -15,7 +15,7 @@ module video_encoder(input        clk, rst,
                RB = 620,   //right boundry
                TB = 20,    //top boundry
                BB = 460,   //bottom boundry
-               thick = 10; //line thickness
+               thick = 6; //line thickness
 
     reg ML_ff , ML_nxt ,  // middle line
         FBL_ff, FBL_nxt,  // football line left
@@ -93,7 +93,7 @@ module video_encoder(input        clk, rst,
                 P1F_nxt = 1'b1;
                 P2_nxt  = 1'b0;
                 P2F_nxt = 1'b0;
-                P2S_nxt = 1'b1;
+                P2S_nxt = 1'b0;
             end
         endcase
 
@@ -106,7 +106,7 @@ module video_encoder(input        clk, rst,
 
         //draw middle line
         if(ML_ff) begin
-            if(x >= 325 && x <= 335) begin
+            if(x >= 317 && x <= 323) begin
                 if(   (y >= 40 && y < 50) ||
                       (y >= 60 && y < 70) ||
                       (y >= 80 && y < 90) ||
@@ -118,7 +118,7 @@ module video_encoder(input        clk, rst,
                     (y >= 200 && y < 210) ||
                     (y >= 220 && y < 230) ||
 
-                    (y >= 235 && y < 245) ||
+                    (y >= 237 && y < 243) ||
 
                     (y >= 250 && y < 260) ||
                     (y >= 270 && y < 280) ||
@@ -173,12 +173,12 @@ module video_encoder(input        clk, rst,
         //draw player 1 paddles
         if(y >= p1_y - size_ff && y < p1_y + size_ff) begin
             //main paddle
-            if(P1_ff && x >= 40 && x < 50) begin
+            if(P1_ff && x >= 40 && x < 46) begin
                 px_data_nxt = 1'b1;
             end
 
             //football forward / squash paddle
-            if(P1F_ff && x >= 480 && x < 490) begin
+            if(P1F_ff && x >= 484 && x < 490) begin
                 px_data_nxt = 1'b1;
             end
         end
@@ -186,17 +186,17 @@ module video_encoder(input        clk, rst,
         //draw player 2 paddles
         if(y >= p2_y - size_ff && y < p2_y + size_ff) begin
             //main paddle
-            if(P2_ff && x >= 590 && x < 600) begin
+            if(P2_ff && x >= 594 && x < 600) begin
                 px_data_nxt = 1'b1;
             end
 
             //football forward
-            if(P2F_ff && x >= 150 && x < 160) begin
+            if(P2F_ff && x >= 150 && x < 156) begin
                 px_data_nxt = 1'b1;
             end
 
             //squash paddle
-            if(P2S_ff && x >= 500 && x < 510) begin
+            if(P2S_ff && x >= 500 && x < 506) begin
                 px_data_nxt = 1'b1;
             end
         end

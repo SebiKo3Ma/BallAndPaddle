@@ -1,6 +1,6 @@
 `timescale 1ns/1ns
-module vga_controller(input px_clk, rst, input[23:0] px_data, output[10:0] px_h, px_v, 
-                        output[7:0] RED, GRN, BLU, output HSYNC, VSYNC);
+module vga_controller(input px_clk, rst, input[29:0] px_data, output[10:0] px_h, px_v, 
+                        output[9:0] RED, GRN, BLU, output HSYNC, VSYNC);
     reg hs_ff, hs_nxt, vs_ff, vs_nxt;
     reg[10:0] hcount_ff, hcount_nxt;
     reg[10:0] vcount_ff, vcount_nxt;
@@ -10,9 +10,9 @@ module vga_controller(input px_clk, rst, input[23:0] px_data, output[10:0] px_h,
     reg[7:0] h_fp, h_bp, h_pw, h_fp_nxt, h_bp_nxt, h_pw_nxt, v_fp, v_bp, v_pw, v_fp_nxt, v_bp_nxt, v_pw_nxt;
     reg polarity, polarity_nxt;
 
-    assign RED = (hcount_ff < h_data && vcount_ff < v_data) ? px_data[23:16] : 8'b00000000;
-    assign GRN = (hcount_ff < h_data && vcount_ff < v_data) ? px_data[15:8]  : 8'b00000000;
-    assign BLU = (hcount_ff < h_data && vcount_ff < v_data) ? px_data[7:0]   : 8'b00000000;
+    assign RED = (hcount_ff < h_data && vcount_ff < v_data) ? px_data[29:20] : 10'd0;
+    assign GRN = (hcount_ff < h_data && vcount_ff < v_data) ? px_data[19:10] : 10'd0;
+    assign BLU = (hcount_ff < h_data && vcount_ff < v_data) ? px_data[9:0]   : 10'd0;
     assign HSYNC = hs_ff;
     assign VSYNC = vs_ff;
 
@@ -74,7 +74,7 @@ module vga_controller(input px_clk, rst, input[23:0] px_data, output[10:0] px_h,
         v_data_nxt = 11'd480;
         v_fp_nxt = 8'd10;
         v_pw_nxt = 8'd2;
-        v_bp_nxt = 8'd29;
+        v_bp_nxt = 8'd33;
 
         polarity_nxt = 1'b1;
     end
