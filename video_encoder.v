@@ -15,7 +15,7 @@ module video_encoder(input        clk, rst,
                RB = 620,   //right boundry
                TB = 20,    //top boundry
                BB = 460,   //bottom boundry
-               thick = 10; //line thickness
+               thick = 6; //line thickness
 
     reg ML_ff , ML_nxt ,  // middle line
         FBL_ff, FBL_nxt,  // football line left
@@ -106,7 +106,7 @@ module video_encoder(input        clk, rst,
 
         //draw middle line
         if(ML_ff) begin
-            if(x >= 325 && x <= 335) begin
+            if(x >= 327 && x <= 333) begin
                 if(   (y >= 40 && y < 50) ||
                       (y >= 60 && y < 70) ||
                       (y >= 80 && y < 90) ||
@@ -118,7 +118,7 @@ module video_encoder(input        clk, rst,
                     (y >= 200 && y < 210) ||
                     (y >= 220 && y < 230) ||
 
-                    (y >= 235 && y < 245) ||
+                    (y >= 237 && y < 243) ||
 
                     (y >= 250 && y < 260) ||
                     (y >= 270 && y < 280) ||
