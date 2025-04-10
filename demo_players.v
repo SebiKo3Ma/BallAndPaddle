@@ -33,7 +33,7 @@ module demo_players(input clk, rst, en, output [10:0] p1_y, p2_y);
 
     always @(posedge clk or posedge rst) begin
         if(rst) begin
-            counter_ff <= 17'd0;
+            counter_ff <= 17'd1;
             p1_ff <= 11'd62;
             p2_ff <= 11'd418;
             heading_ff <= 1'b1;
