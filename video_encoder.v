@@ -29,6 +29,8 @@ module video_encoder(input        clk, rst,
 
     reg [5:0] size_ff, size_nxt; //bat size
 
+    reg [6:0] scl_ff, scl_nxt;
+
     //pixel data output registers
     reg px_data_ff, px_data_nxt;
     assign px_data = px_data_ff;
@@ -45,6 +47,7 @@ module video_encoder(input        clk, rst,
         P2S_nxt = P2S_ff;
         size_nxt = size_ff;
         px_data_nxt = 1'b0;
+        scl_nxt = scl_ff;
 
         //enable components of the field based on the game mode
         case(mode)
@@ -207,6 +210,149 @@ module video_encoder(input        clk, rst,
                 px_data_nxt = 1'b1;
             end
         end
+
+        //draw score left
+        if(x >= 300 - (3 * thick) && x < 300) begin
+            if(y >= 50 && y <= 50 + thick) begin
+                if(scl_ff[5]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+            if(y >= 50 + (2 * thick) && y <= 50 + (3 * thick)) begin
+                if(scl_ff[6]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+            if(y >= 50 + (4 * thick) && y <= 50 + (5 * thick)) begin
+                if(scl_ff[2]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+        end
+
+        if(x >= 300 - (3*thick) && x < 300 - (2*thick)) begin
+            if(y >= 50 && y < 50 + (3 * thick)) begin
+                if(scl_ff[4]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+
+            if(y >= 50 + (2*thick) && y < 50 + (5 * thick)) begin
+                if(scl_ff[3]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+        end
+
+        if(x >= 300 - thick && x < 300) begin
+            if(y >= 50 && y < 50 + (3 * thick)) begin
+                if(scl_ff[0]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+
+            if(y >= 50 + (2*thick) && y < 50 + (5 * thick)) begin
+                if(scl_ff[1]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+        end
+
+        //draw score right
+        if(mode != 2'b11) begin
+            if(x >= 340 && x < 340 + (3 * thick)) begin
+                if(y >= 50 && y <= 50 + thick) begin
+                    if(scl_ff[5]) begin
+                        px_data_nxt = 1'b1;
+                    end
+                end
+                if(y >= 50 + (2 * thick) && y <= 50 + (3 * thick)) begin
+                    if(scl_ff[6]) begin
+                        px_data_nxt = 1'b1;
+                    end
+                end
+                if(y >= 50 + (4 * thick) && y <= 50 + (5 * thick)) begin
+                    if(scl_ff[2]) begin
+                        px_data_nxt = 1'b1;
+                    end
+                end
+            end
+
+            if(x >= 340 && x < 340 + thick) begin
+                if(y >= 50 && y < 50 + (3 * thick)) begin
+                    if(scl_ff[4]) begin
+                        px_data_nxt = 1'b1;
+                    end
+                end
+
+                if(y >= 50 + (2*thick) && y < 50 + (5 * thick)) begin
+                    if(scl_ff[3]) begin
+                        px_data_nxt = 1'b1;
+                    end
+                end
+            end
+
+            if(x >= 340 + (2 * thick) && x < 340 + (3 * thick)) begin
+                if(y >= 50 && y < 50 + (3 * thick)) begin
+                    if(scl_ff[0]) begin
+                        px_data_nxt = 1'b1;
+                    end
+                end
+
+                if(y >= 50 + (2*thick) && y < 50 + (5 * thick)) begin
+                    if(scl_ff[1]) begin
+                        px_data_nxt = 1'b1;
+                    end
+                end
+            end
+        end
+
+        //score counter
+        case(p1_score)
+            6'd0 : begin
+                scl_nxt = 7'b0111111;
+            end
+
+            6'd1: begin
+                scl_nxt = 7'b0000011;
+            end
+
+            6'd2 : begin
+                scl_nxt = 7'b1101101;
+            end
+
+            6'd3: begin
+                scl_nxt = 7'b1100111;
+            end
+
+            6'd4 : begin
+                scl_nxt = 7'b1010011;
+            end
+
+            6'd5: begin
+                scl_nxt = 7'b1110110;
+            end
+
+            6'd6 : begin
+                scl_nxt = 7'b1111110;
+            end
+
+            6'd7: begin
+                scl_nxt = 7'b0100011;
+            end
+
+            6'd8 : begin
+                scl_nxt = 7'b1111111;
+            end
+
+            6'd9: begin
+                scl_nxt = 7'b1110111;
+            end
+
+            default: begin
+                scl_nxt = 7'b1111000;
+            end
+        endcase
     end
 
     always @(posedge clk or posedge rst) begin
@@ -222,6 +368,7 @@ module video_encoder(input        clk, rst,
             P2S_ff     <= 1'b0;
             size_ff    <= 6'd0;
             px_data_ff <= 1'b0;
+            scl_ff <= 7'b0111111;
         end else begin
             ML_ff      <= ML_nxt;
             FBL_ff     <= FBL_nxt;
@@ -234,6 +381,7 @@ module video_encoder(input        clk, rst,
             P2S_ff     <= P2S_nxt;
             size_ff    <= size_nxt;
             px_data_ff <= px_data_nxt;
+            scl_ff <= scl_nxt;
         end
     end
 endmodule
