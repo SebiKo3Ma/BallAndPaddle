@@ -17,7 +17,8 @@ module game_controller( input clk, rst,
     //ball registers
     reg [10:0] x_ff, x_nxt, y_ff, y_nxt; //ball position flip-flops
     reg xh_ff, xh_nxt, yh_ff, yh_nxt;    //ball heading flip-flops
-    reg [17:0] counter_ff, counter_nxt;  //counter for ball movement speed
+    reg [15:0] counter_ff, counter_nxt;  //counter for ball movement speed
+    reg [1:0] mini_counter_ff, mini_counter_nxt;
 
     //score registers
     reg [4:0] p1_score_ff, p1_score_nxt, p2_score_ff, p2_score_nxt; //player scores flip-flops
@@ -39,13 +40,18 @@ module game_controller( input clk, rst,
         p2_score_nxt = p2_score_ff;
 
         counter_nxt = counter_ff + 1;
+        mini_counter_nxt = mini_counter_ff;
         x_nxt = x_ff;
         y_nxt = y_ff;
         xh_nxt = xh_ff;
         yh_nxt = yh_ff;
 
+        if(!counter_ff) begin
+            mini_counter_nxt = mini_counter_ff + 1;
+        end
+
         //ball movement and collisions
-        if(!counter_ff || ball_speed) begin
+        if((!mini_counter_ff || ball_speed) && !counter_ff) begin
             if(xh_ff) begin
                 x_nxt = x_ff + 1;
             end else begin
@@ -87,7 +93,8 @@ module game_controller( input clk, rst,
             p1_score_ff <= 5'd0;
             p2_score_ff <= 5'd0;
 
-            counter_ff <= 18'd1;
+            counter_ff <= 16'd1;
+            mini_counter_ff <= 2'd1;
             x_ff <= 11'd60;
             y_ff <= 11'd60;
             xh_ff <= 1'b1;
@@ -97,6 +104,7 @@ module game_controller( input clk, rst,
             p2_score_ff <= p2_score_nxt;
 
             counter_ff <= counter_nxt;
+            mini_counter_ff <= mini_counter_nxt;
             x_ff <= x_nxt;
             y_ff <= y_nxt;
             xh_ff <= xh_nxt;
