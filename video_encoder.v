@@ -212,46 +212,94 @@ module video_encoder(input        clk, rst,
         end
 
         //draw score left
-        if(x >= 300 - (3 * thick) && x < 300) begin
-            if(y >= 50 && y <= 50 + thick) begin
+        //second digit
+        if(x >= 282 && x < 300) begin
+            if(y >= 50 && y <= 56) begin
                 if(scl_ff[5]) begin
                     px_data_nxt = 1'b1;
                 end
             end
-            if(y >= 50 + (2 * thick) && y <= 50 + (3 * thick)) begin
+            if(y >= 62 && y <= 68) begin
                 if(scl_ff[6]) begin
                     px_data_nxt = 1'b1;
                 end
             end
-            if(y >= 50 + (4 * thick) && y <= 50 + (5 * thick)) begin
+            if(y >= 74 && y <= 80) begin
                 if(scl_ff[2]) begin
                     px_data_nxt = 1'b1;
                 end
             end
         end
 
-        if(x >= 300 - (3*thick) && x < 300 - (2*thick)) begin
-            if(y >= 50 && y < 50 + (3 * thick)) begin
+        if(x >= 282 && x < 288) begin
+            if(y >= 50 && y < 68) begin
                 if(scl_ff[4]) begin
                     px_data_nxt = 1'b1;
                 end
             end
 
-            if(y >= 50 + (2*thick) && y < 50 + (5 * thick)) begin
+            if(y >= 62 && y < 80) begin
                 if(scl_ff[3]) begin
                     px_data_nxt = 1'b1;
                 end
             end
         end
 
-        if(x >= 300 - thick && x < 300) begin
-            if(y >= 50 && y < 50 + (3 * thick)) begin
+        if(x >= 294 && x < 300) begin
+            if(y >= 50 && y < 68) begin
                 if(scl_ff[0]) begin
                     px_data_nxt = 1'b1;
                 end
             end
 
-            if(y >= 50 + (2*thick) && y < 50 + (5 * thick)) begin
+            if(y >= 62 && y < 80) begin
+                if(scl_ff[1]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+        end
+
+        //first digit
+        if(x >= 258 && x < 276) begin
+            if(y >= 50 && y <= 56) begin
+                if(scl_ff[5]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+            if(y >= 62 && y <= 68) begin
+                if(scl_ff[6]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+            if(y >= 74 && y <= 80) begin
+                if(scl_ff[2]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+        end
+
+        if(x >= 258 && x < 264) begin
+            if(y >= 50 && y < 68) begin
+                if(scl_ff[4]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+
+            if(y >= 62 && y < 80) begin
+                if(scl_ff[3]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+        end
+
+        if(x >= 270 && x < 276) begin
+            if(y >= 50 && y < 68) begin
+                if(scl_ff[0]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+
+            if(y >= 62 && y < 80) begin
                 if(scl_ff[1]) begin
                     px_data_nxt = 1'b1;
                 end
