@@ -1,7 +1,7 @@
 module video_encoder(input        clk, rst,
                                   bat_size,
                      input [1:0]  mode,
-                     input [5:0]  p1_score,
+                     input [4:0]  p1_score,
                                   p2_score,
                      input [10:0] p1_y,
                                   p2_y,
@@ -29,11 +29,14 @@ module video_encoder(input        clk, rst,
 
     reg [5:0] size_ff, size_nxt; //bat size
 
-    reg [6:0] scl_ff, scl_nxt;
+    wire [13:0] scl, scr;
 
     //pixel data output registers
     reg px_data_ff, px_data_nxt;
     assign px_data = px_data_ff;
+
+    segments_lut segl(p1_score, scl);
+    segments_lut segr(p2_score, scr);
 
     always @* begin
         ML_nxt  = ML_ff ;
@@ -47,7 +50,6 @@ module video_encoder(input        clk, rst,
         P2S_nxt = P2S_ff;
         size_nxt = size_ff;
         px_data_nxt = 1'b0;
-        scl_nxt = scl_ff;
 
         //enable components of the field based on the game mode
         case(mode)
@@ -215,17 +217,17 @@ module video_encoder(input        clk, rst,
         //second digit
         if(x >= 282 && x < 300) begin
             if(y >= 50 && y <= 56) begin
-                if(scl_ff[5]) begin
+                if(scl[5]) begin
                     px_data_nxt = 1'b1;
                 end
             end
             if(y >= 62 && y <= 68) begin
-                if(scl_ff[6]) begin
+                if(scl[6]) begin
                     px_data_nxt = 1'b1;
                 end
             end
             if(y >= 74 && y <= 80) begin
-                if(scl_ff[2]) begin
+                if(scl[2]) begin
                     px_data_nxt = 1'b1;
                 end
             end
@@ -233,13 +235,13 @@ module video_encoder(input        clk, rst,
 
         if(x >= 282 && x < 288) begin
             if(y >= 50 && y < 68) begin
-                if(scl_ff[4]) begin
+                if(scl[4]) begin
                     px_data_nxt = 1'b1;
                 end
             end
 
             if(y >= 62 && y < 80) begin
-                if(scl_ff[3]) begin
+                if(scl[3]) begin
                     px_data_nxt = 1'b1;
                 end
             end
@@ -247,13 +249,13 @@ module video_encoder(input        clk, rst,
 
         if(x >= 294 && x < 300) begin
             if(y >= 50 && y < 68) begin
-                if(scl_ff[0]) begin
+                if(scl[0]) begin
                     px_data_nxt = 1'b1;
                 end
             end
 
             if(y >= 62 && y < 80) begin
-                if(scl_ff[1]) begin
+                if(scl[1]) begin
                     px_data_nxt = 1'b1;
                 end
             end
@@ -262,17 +264,17 @@ module video_encoder(input        clk, rst,
         //first digit
         if(x >= 258 && x < 276) begin
             if(y >= 50 && y <= 56) begin
-                if(scl_ff[5]) begin
+                if(scl[12]) begin
                     px_data_nxt = 1'b1;
                 end
             end
             if(y >= 62 && y <= 68) begin
-                if(scl_ff[6]) begin
+                if(scl[13]) begin
                     px_data_nxt = 1'b1;
                 end
             end
             if(y >= 74 && y <= 80) begin
-                if(scl_ff[2]) begin
+                if(scl[9]) begin
                     px_data_nxt = 1'b1;
                 end
             end
@@ -280,13 +282,13 @@ module video_encoder(input        clk, rst,
 
         if(x >= 258 && x < 264) begin
             if(y >= 50 && y < 68) begin
-                if(scl_ff[4]) begin
+                if(scl[11]) begin
                     px_data_nxt = 1'b1;
                 end
             end
 
             if(y >= 62 && y < 80) begin
-                if(scl_ff[3]) begin
+                if(scl[10]) begin
                     px_data_nxt = 1'b1;
                 end
             end
@@ -294,13 +296,13 @@ module video_encoder(input        clk, rst,
 
         if(x >= 270 && x < 276) begin
             if(y >= 50 && y < 68) begin
-                if(scl_ff[0]) begin
+                if(scl[7]) begin
                     px_data_nxt = 1'b1;
                 end
             end
 
             if(y >= 62 && y < 80) begin
-                if(scl_ff[1]) begin
+                if(scl[8]) begin
                     px_data_nxt = 1'b1;
                 end
             end
@@ -311,17 +313,17 @@ module video_encoder(input        clk, rst,
             //first digit
             if(x >= 340 && x < 358) begin
                 if(y >= 50 && y <= 56) begin
-                    if(scl_ff[5]) begin
+                    if(scr[12]) begin
                         px_data_nxt = 1'b1;
                     end
                 end
                 if(y >= 62 && y <= 68) begin
-                    if(scl_ff[6]) begin
+                    if(scr[13]) begin
                         px_data_nxt = 1'b1;
                     end
                 end
                 if(y >= 74 && y <= 80) begin
-                    if(scl_ff[2]) begin
+                    if(scr[9]) begin
                         px_data_nxt = 1'b1;
                     end
                 end
@@ -329,13 +331,13 @@ module video_encoder(input        clk, rst,
 
             if(x >= 340 && x < 346) begin
                 if(y >= 50 && y < 68) begin
-                    if(scl_ff[4]) begin
+                    if(scr[11]) begin
                         px_data_nxt = 1'b1;
                     end
                 end
 
                 if(y >= 62 && y < 80) begin
-                    if(scl_ff[3]) begin
+                    if(scr[10]) begin
                         px_data_nxt = 1'b1;
                     end
                 end
@@ -343,13 +345,13 @@ module video_encoder(input        clk, rst,
 
             if(x >= 352 && x < 358) begin
                 if(y >= 50 && y < 68) begin
-                    if(scl_ff[0]) begin
+                    if(scr[7]) begin
                         px_data_nxt = 1'b1;
                     end
                 end
 
                 if(y >= 62 && y < 80) begin
-                    if(scl_ff[1]) begin
+                    if(scr[8]) begin
                         px_data_nxt = 1'b1;
                     end
                 end
@@ -358,17 +360,17 @@ module video_encoder(input        clk, rst,
             //second digit
             if(x >= 364 && x < 382) begin
                 if(y >= 50 && y <= 56) begin
-                    if(scl_ff[5]) begin
+                    if(scr[5]) begin
                         px_data_nxt = 1'b1;
                     end
                 end
                 if(y >= 62 && y <= 68) begin
-                    if(scl_ff[6]) begin
+                    if(scr[6]) begin
                         px_data_nxt = 1'b1;
                     end
                 end
                 if(y >= 74 && y <= 80) begin
-                    if(scl_ff[2]) begin
+                    if(scr[2]) begin
                         px_data_nxt = 1'b1;
                     end
                 end
@@ -376,13 +378,13 @@ module video_encoder(input        clk, rst,
 
             if(x >= 364 && x < 370) begin
                 if(y >= 50 && y < 68) begin
-                    if(scl_ff[4]) begin
+                    if(scr[4]) begin
                         px_data_nxt = 1'b1;
                     end
                 end
 
                 if(y >= 62 && y < 80) begin
-                    if(scl_ff[3]) begin
+                    if(scr[3]) begin
                         px_data_nxt = 1'b1;
                     end
                 end
@@ -390,65 +392,18 @@ module video_encoder(input        clk, rst,
 
             if(x >= 376 && x < 382) begin
                 if(y >= 50 && y < 68) begin
-                    if(scl_ff[0]) begin
+                    if(scr[0]) begin
                         px_data_nxt = 1'b1;
                     end
                 end
 
                 if(y >= 62 && y < 80) begin
-                    if(scl_ff[1]) begin
+                    if(scr[1]) begin
                         px_data_nxt = 1'b1;
                     end
                 end
             end
-        end
-
-        //score counter
-        case(p1_score)
-            6'd0 : begin
-                scl_nxt = 7'b0111111;
-            end
-
-            6'd1: begin
-                scl_nxt = 7'b0000011;
-            end
-
-            6'd2 : begin
-                scl_nxt = 7'b1101101;
-            end
-
-            6'd3: begin
-                scl_nxt = 7'b1100111;
-            end
-
-            6'd4 : begin
-                scl_nxt = 7'b1010011;
-            end
-
-            6'd5: begin
-                scl_nxt = 7'b1110110;
-            end
-
-            6'd6 : begin
-                scl_nxt = 7'b1111110;
-            end
-
-            6'd7: begin
-                scl_nxt = 7'b0100011;
-            end
-
-            6'd8 : begin
-                scl_nxt = 7'b1111111;
-            end
-
-            6'd9: begin
-                scl_nxt = 7'b1110111;
-            end
-
-            default: begin
-                scl_nxt = 7'b1111000;
-            end
-        endcase
+        end        
     end
 
     always @(posedge clk or posedge rst) begin
@@ -464,7 +419,6 @@ module video_encoder(input        clk, rst,
             P2S_ff     <= 1'b0;
             size_ff    <= 6'd0;
             px_data_ff <= 1'b0;
-            scl_ff <= 7'b0111111;
         end else begin
             ML_ff      <= ML_nxt;
             FBL_ff     <= FBL_nxt;
@@ -477,7 +431,6 @@ module video_encoder(input        clk, rst,
             P2S_ff     <= P2S_nxt;
             size_ff    <= size_nxt;
             px_data_ff <= px_data_nxt;
-            scl_ff <= scl_nxt;
         end
     end
 endmodule

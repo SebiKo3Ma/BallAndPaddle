@@ -11,7 +11,7 @@ module demo_ball(input clk, rst, en, output [10:0] x, y);
         x_nxt = x_ff;
         y_nxt = y_ff;
         xh_nxt = xh_ff;
-        yh_nxt = yh_nxt;
+        yh_nxt = yh_ff;
 
         if(!counter_ff) begin
             if(xh_ff) begin
