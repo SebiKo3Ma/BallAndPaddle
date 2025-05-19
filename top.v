@@ -11,7 +11,7 @@ module top(input clk, rst, ball_speed, angle, bat_size, input[1:0] mode, output 
     // demo_ball demo_ball(clk, rst, en, bx, by);
     // demo_score demo_score(clk, rst, en2, score1, score2);
     clk_divider clk_divider(clk, rst, px_clk);
-    game_controller game_controller(clk, rst, 11'd62, 11'd418, mode, ball_speed, 1'b0, angle, bat_size, 1'b0, score1, score2, p1_y, p2_y, bx, by);
+    game_controller game_controller(clk, rst, 11'd162, 11'd418, mode, ball_speed, 1'b0, angle, bat_size, 1'b0, score1, score2, p1_y, p2_y, bx, by);
     video_encoder video_encoder(clk, rst, bat_size, mode, score1, score2, p1_y, p2_y, bx, by, x, y, px_data_out);
     vga_controller vga_controller(px_clk, rst, px_data_in, x, y, RED, GRN, BLU, HSYNC, VSYNC);
 endmodule

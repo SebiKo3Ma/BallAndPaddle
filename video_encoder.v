@@ -170,7 +170,7 @@ module video_encoder(input        clk, rst,
 
         //set paddle size
         if(bat_size) begin
-            size_nxt = 6'd35;
+            size_nxt = 6'd15;
         end else begin
             size_nxt = 6'd25;
         end

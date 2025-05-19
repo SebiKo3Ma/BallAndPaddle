@@ -25,7 +25,7 @@ module game_controller( input clk, rst,
     reg turn_ff, turn_nxt; //squash player turn flip-flop
 
     //player paddle registers
-    reg [10:0] p1_ff, p1_nxt, p2_ff, p2_nxt;
+    reg [4:0] bat;
 
     //output assignments
     assign p1_score = p1_score_ff;
@@ -84,7 +84,7 @@ module game_controller( input clk, rst,
             end
 
             2'b01 : begin //football collisions and score
-                //horizontal collisions
+                //side border collisions
                 if(x_ff <= 11'd30) begin
                     if(!(y_ff >= 11'd134 && y_ff <= 11'd344)) begin
                         xh_nxt = 1'b1;
@@ -106,6 +106,7 @@ module game_controller( input clk, rst,
                         p1_score_nxt = p1_score_ff + 1;
                     end
                 end
+
             end
 
             2'b10 : begin //squash collision and scoring
@@ -143,6 +144,28 @@ module game_controller( input clk, rst,
             end
         endcase
 
+        //paddle collisions
+        //player 1 main paddle
+        if(mode == 2'b00 || mode == 2'b01) begin //active in tennis and football
+            if((x_ff == 11'd50 || x_ff == 11'd40) && y_ff >= p1_in - bat && y_ff <= p1_in + bat) begin
+                xh_nxt = ~xh_ff;
+                if(x_ff == 11'd50) begin
+                    x_nxt = 11'd51;
+                end else begin
+                    x_nxt = 11'd39;
+                end
+            end
+
+            if((y_ff == p1_in - bat || y_ff == p1_y + bat) && x_ff >= 11'd40 && y_ff <= 11'd50) begin
+                yh_nxt = ~yh_ff;
+                if(y_ff == p1_in - bat) begin
+                    y_nxt = y_ff - 1;
+                end else begin
+                    y_nxt = y_ff + 1;
+                end
+            end
+        end
+
         //vertical collisions
                 if(y_ff <= 11'd30) begin
                     yh_nxt = 1'b1;
@@ -168,6 +191,8 @@ module game_controller( input clk, rst,
             y_ff <= 11'd60;
             xh_ff <= 1'b1;
             yh_ff <= 1'b1;
+
+            bat <= 5'd25;
         end else begin
             p1_score_ff <= p1_score_nxt;
             p2_score_ff <= p2_score_nxt;
@@ -179,6 +204,12 @@ module game_controller( input clk, rst,
             y_ff <= y_nxt;
             xh_ff <= xh_nxt;
             yh_ff <= yh_nxt;
+
+            if(bat_size) begin
+                bat <= 5'd15;
+            end else begin
+                bat <= 5'd25;
+            end
         end
     end
 
