@@ -309,102 +309,101 @@ module video_encoder(input        clk, rst,
         end
 
         //draw score right
-        if(mode != 2'b11) begin
-            //first digit
-            if(x >= 340 && x < 358) begin
-                if(y >= 50 && y <= 56) begin
-                    if(scr[12]) begin
-                        px_data_nxt = 1'b1;
-                    end
+        //first digit
+        if(x >= 340 && x < 358) begin
+            if(y >= 50 && y <= 56) begin
+                if(scr[12]) begin
+                    px_data_nxt = 1'b1;
                 end
-                if(y >= 62 && y <= 68) begin
-                    if(scr[13]) begin
-                        px_data_nxt = 1'b1;
-                    end
+            end
+            if(y >= 62 && y <= 68) begin
+                if(scr[13]) begin
+                    px_data_nxt = 1'b1;
                 end
-                if(y >= 74 && y <= 80) begin
-                    if(scr[9]) begin
-                        px_data_nxt = 1'b1;
-                    end
+            end
+            if(y >= 74 && y <= 80) begin
+                if(scr[9]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+        end
+
+        if(x >= 340 && x < 346) begin
+            if(y >= 50 && y < 68) begin
+                if(scr[11]) begin
+                    px_data_nxt = 1'b1;
                 end
             end
 
-            if(x >= 340 && x < 346) begin
-                if(y >= 50 && y < 68) begin
-                    if(scr[11]) begin
-                        px_data_nxt = 1'b1;
-                    end
+            if(y >= 62 && y < 80) begin
+                if(scr[10]) begin
+                    px_data_nxt = 1'b1;
                 end
+            end
+        end
 
-                if(y >= 62 && y < 80) begin
-                    if(scr[10]) begin
-                        px_data_nxt = 1'b1;
-                    end
+        if(x >= 352 && x < 358) begin
+            if(y >= 50 && y < 68) begin
+                if(scr[7]) begin
+                    px_data_nxt = 1'b1;
                 end
             end
 
-            if(x >= 352 && x < 358) begin
-                if(y >= 50 && y < 68) begin
-                    if(scr[7]) begin
-                        px_data_nxt = 1'b1;
-                    end
+            if(y >= 62 && y < 80) begin
+                if(scr[8]) begin
+                    px_data_nxt = 1'b1;
                 end
+            end
+        end
 
-                if(y >= 62 && y < 80) begin
-                    if(scr[8]) begin
-                        px_data_nxt = 1'b1;
-                    end
+        //second digit
+        if(x >= 364 && x < 382) begin
+            if(y >= 50 && y <= 56) begin
+                if(scr[5]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+            if(y >= 62 && y <= 68) begin
+                if(scr[6]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+            if(y >= 74 && y <= 80) begin
+                if(scr[2]) begin
+                    px_data_nxt = 1'b1;
+                end
+            end
+        end
+
+        if(x >= 364 && x < 370) begin
+            if(y >= 50 && y < 68) begin
+                if(scr[4]) begin
+                    px_data_nxt = 1'b1;
                 end
             end
 
-            //second digit
-            if(x >= 364 && x < 382) begin
-                if(y >= 50 && y <= 56) begin
-                    if(scr[5]) begin
-                        px_data_nxt = 1'b1;
-                    end
+            if(y >= 62 && y < 80) begin
+                if(scr[3]) begin
+                    px_data_nxt = 1'b1;
                 end
-                if(y >= 62 && y <= 68) begin
-                    if(scr[6]) begin
-                        px_data_nxt = 1'b1;
-                    end
-                end
-                if(y >= 74 && y <= 80) begin
-                    if(scr[2]) begin
-                        px_data_nxt = 1'b1;
-                    end
+            end
+        end
+
+        if(x >= 376 && x < 382) begin
+            if(y >= 50 && y < 68) begin
+                if(scr[0]) begin
+                    px_data_nxt = 1'b1;
                 end
             end
 
-            if(x >= 364 && x < 370) begin
-                if(y >= 50 && y < 68) begin
-                    if(scr[4]) begin
-                        px_data_nxt = 1'b1;
-                    end
-                end
-
-                if(y >= 62 && y < 80) begin
-                    if(scr[3]) begin
-                        px_data_nxt = 1'b1;
-                    end
+            if(y >= 62 && y < 80) begin
+                if(scr[1]) begin
+                    px_data_nxt = 1'b1;
                 end
             end
+        end
+    end        
 
-            if(x >= 376 && x < 382) begin
-                if(y >= 50 && y < 68) begin
-                    if(scr[0]) begin
-                        px_data_nxt = 1'b1;
-                    end
-                end
-
-                if(y >= 62 && y < 80) begin
-                    if(scr[1]) begin
-                        px_data_nxt = 1'b1;
-                    end
-                end
-            end
-        end        
-    end
 
     always @(posedge clk or posedge rst) begin
         if(rst) begin

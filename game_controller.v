@@ -22,6 +22,7 @@ module game_controller( input clk, rst,
 
     //score registers
     reg [4:0] p1_score_ff, p1_score_nxt, p2_score_ff, p2_score_nxt; //player scores flip-flops
+    reg turn_ff, turn_nxt; //squash player turn flip-flop
 
     //player paddle registers
     reg [10:0] p1_ff, p1_nxt, p2_ff, p2_nxt;
@@ -38,6 +39,7 @@ module game_controller( input clk, rst,
     always @* begin
         p1_score_nxt = p1_score_ff;
         p2_score_nxt = p2_score_ff;
+        turn_nxt = turn_ff;
 
         counter_nxt = counter_ff + 1;
         mini_counter_nxt = mini_counter_ff;
@@ -50,7 +52,7 @@ module game_controller( input clk, rst,
             mini_counter_nxt = mini_counter_ff + 1;
         end
 
-        //ball movement and collisions
+        //ball movement
         if((!mini_counter_ff || ball_speed) && !counter_ff) begin
             if(xh_ff) begin
                 x_nxt = x_ff + 1;
@@ -63,35 +65,102 @@ module game_controller( input clk, rst,
             end else begin
                 y_nxt = y_ff - 1;
             end
-
-            if(x_ff <= 11'd30) begin
-                xh_nxt = 1'b1;
-                x_nxt = 11'd31;
-                p2_score_nxt = p2_score_ff + 1;
-            end
-
-            if(x_ff >= 11'd610) begin
-                xh_nxt = 1'b0;
-                x_nxt = 11'd609;
-                p1_score_nxt = p1_score_ff + 1;
-            end
-
-            if(y_ff <= 11'd30) begin
-                yh_nxt = 1'b1;
-                y_nxt = 11'd31;
-            end
-
-            if(y_ff >= 11'd450) begin
-                yh_nxt = 1'b0;
-                y_nxt = 11'd445;
-            end
         end
+
+        case(mode)
+            2'b00 : begin //tennis collisions and score
+                //horizontal collisions
+                if(x_ff <= 11'd15) begin
+                    xh_nxt = 1'b1;
+                    x_nxt = 11'd340;
+                    p2_score_nxt = p2_score_ff + 1;
+                end
+
+                if(x_ff >= 11'd625) begin
+                    xh_nxt = 1'b0;
+                    x_nxt = 11'd300;
+                    p1_score_nxt = p1_score_ff + 1;
+                end
+            end
+
+            2'b01 : begin //football collisions and score
+                //horizontal collisions
+                if(x_ff <= 11'd30) begin
+                    if(!(y_ff >= 11'd134 && y_ff <= 11'd344)) begin
+                        xh_nxt = 1'b1;
+                        x_nxt = 11'd31;
+                    end else if(x_ff <= 11'd15) begin
+                        xh_nxt = 1'b1;
+                        x_nxt = 11'd340;
+                        p2_score_nxt = p2_score_ff + 1;
+                    end
+                end
+
+                if(x_ff >= 11'd610) begin
+                    if(!(y_ff >= 11'd134 && y_ff <= 11'd344)) begin
+                        xh_nxt = 1'b0;
+                        x_nxt = 11'd609;
+                    end else if(x_ff >= 11'd625) begin
+                        xh_nxt = 1'b0;
+                        x_nxt = 11'd300;
+                        p1_score_nxt = p1_score_ff + 1;
+                    end
+                end
+            end
+
+            2'b10 : begin //squash collision and scoring
+                if(x_ff <= 11'd30) begin
+                    xh_nxt = 1'b1;
+                    x_nxt = 11'd31;
+                    turn_nxt = turn_ff + 1;
+                end
+
+                if(x_ff >= 625) begin
+                    x_nxt = 11'd280;
+                    if(turn_ff) begin
+                        p1_score_nxt = p1_score_ff + 1;
+                    end else begin
+                        p2_score_nxt = p2_score_ff + 1;
+                    end
+
+                    xh_nxt = 1'b0; //temp for debug, remove when adding paddle collisions
+                end
+            end
+
+            2'b11 : begin //squash practice collision and scoring
+                if(x_ff <= 11'd30) begin
+                    xh_nxt = 1'b1;
+                    x_nxt = 11'd31;
+                end
+
+                if(x_ff >= 11'd625) begin
+                    x_nxt = 11'd280;
+                    p2_score_nxt = p2_score_ff + 1;
+                    xh_nxt = 1'b0; //temp for debug, remove when adding paddle collisions
+                end
+
+                //p1 score to be added with paddle
+            end
+        endcase
+
+        //vertical collisions
+                if(y_ff <= 11'd30) begin
+                    yh_nxt = 1'b1;
+                    y_nxt = 11'd31;
+                end
+
+                if(y_ff >= 11'd450) begin
+                    yh_nxt = 1'b0;
+                    y_nxt = 11'd445;
+                end
+        
     end
 
     always @(posedge clk or posedge rst) begin
         if(rst) begin 
             p1_score_ff <= 5'd0;
             p2_score_ff <= 5'd0;
+            turn_ff <= 1'b0;
 
             counter_ff <= 16'd1;
             mini_counter_ff <= 2'd1;
@@ -102,6 +171,7 @@ module game_controller( input clk, rst,
         end else begin
             p1_score_ff <= p1_score_nxt;
             p2_score_ff <= p2_score_nxt;
+            turn_ff <= turn_nxt;
 
             counter_ff <= counter_nxt;
             mini_counter_ff <= mini_counter_nxt;
