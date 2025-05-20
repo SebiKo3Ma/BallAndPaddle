@@ -161,15 +161,25 @@ module game_controller( input clk, rst,
         //player football forwards
         if(mode == 2'b01) begin //active in football mode
             if(x_ff == 11'd489 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat) begin
-                yh_nxt = ~yh_ff;
                 xh_nxt = 1'b1;
                 x_nxt = 11'd490;
+
+                if(y_ff < 11'd240) begin
+                    yh_nxt = 1'b1;
+                end else begin
+                    yh_nxt = 1'b0;
+                end
             end
 
             if(x_ff == 11'd155 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat) begin
-                yh_nxt = ~yh_ff;
                 xh_nxt = 1'b0;
                 x_nxt = 11'd154;
+
+                if(y_ff < 11'd240) begin
+                    yh_nxt = 1'b1;
+                end else begin
+                    yh_nxt = 1'b0;
+                end
             end
         end
 
