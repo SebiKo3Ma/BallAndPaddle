@@ -11,19 +11,19 @@ module paddle_controller_btn(input clk, rst, p1p, p1m, p2p, p2m, bat_size, outpu
         counter_nxt = counter_ff + 1;
 
         if(!counter_ff) begin
-            if(p1p) begin
+            if(!p1p) begin
                 p1_nxt = p1_ff + 1;
             end
 
-            if(p1m) begin
+            if(!p1m) begin
                 p1_nxt = p1_ff - 1;
             end
 
-            if(p2p) begin
+            if(!p2p) begin
                 p2_nxt = p2_ff + 1;
             end
 
-            if(p2m) begin
+            if(!p2m) begin
                 p2_nxt = p2_ff - 1;
             end
         end
