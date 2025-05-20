@@ -201,7 +201,7 @@ module video_encoder(input        clk, rst,
             end
 
             //squash paddle
-            if(P2S_ff && x >= 500 && x < 506) begin
+            if(P2S_ff && (x == 500 || x == 501 || x == 504 || x == 505)) begin
                 px_data_nxt = 1'b1;
             end
         end
