@@ -124,7 +124,7 @@ module game_controller( input clk, rst,
                         p2_score_nxt = p2_score_ff + 1;
                     end
 
-                    xh_nxt = 1'b0; //temp for debug, remove when adding paddle collisions
+                    //xh_nxt = 1'b0; //temp for debug, remove when adding paddle collisions
                 end
             end
 
@@ -137,7 +137,7 @@ module game_controller( input clk, rst,
                 if(x_ff >= 11'd625) begin
                     x_nxt = 11'd280;
                     p2_score_nxt = p2_score_ff + 1;
-                    xh_nxt = 1'b0; //temp for debug, remove when adding paddle collisions
+                    //xh_nxt = 1'b0; //temp for debug, remove when adding paddle collisions
                 end
 
                 //p1 score to be added with paddle
@@ -145,37 +145,63 @@ module game_controller( input clk, rst,
         endcase
 
         //paddle collisions
-        //player 1 main paddle
+        //player main paddles
         if(mode == 2'b00 || mode == 2'b01) begin //active in tennis and football
-            if((x_ff == 11'd50 || x_ff == 11'd40) && y_ff >= p1_in - bat && y_ff <= p1_in + bat) begin
-                xh_nxt = ~xh_ff;
-                if(x_ff == 11'd50) begin
-                    x_nxt = 11'd51;
-                end else begin
-                    x_nxt = 11'd39;
-                end
+            if(x_ff == 11'd45 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat) begin
+                xh_nxt = 1'b1;
+                x_nxt = 11'd46;
             end
 
-            if((y_ff == p1_in - bat || y_ff == p1_y + bat) && x_ff >= 11'd40 && y_ff <= 11'd50) begin
+            if(x_ff == 11'd595 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat) begin
+                xh_nxt = 1'b0;
+                x_nxt = 11'd594;
+            end
+        end
+
+        //player football forwards
+        if(mode == 2'b01) begin //active in football mode
+            if(x_ff == 11'd489 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat) begin
                 yh_nxt = ~yh_ff;
-                if(y_ff == p1_in - bat) begin
-                    y_nxt = y_ff - 1;
-                end else begin
-                    y_nxt = y_ff + 1;
+                xh_nxt = 1'b1;
+                x_nxt = 11'd490;
+            end
+
+            if(x_ff == 11'd155 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat) begin
+                yh_nxt = ~yh_ff;
+                xh_nxt = 1'b0;
+                x_nxt = 11'd154;
+            end
+        end
+
+        //player 2 squash paddle
+        if(mode == 2'b10) begin //active in squash mode
+            if(x_ff == 11'd505 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat) begin
+                xh_nxt = 1'b0;
+                x_nxt = 11'd504;
+            end
+        end
+
+        //player 1 squash paddle
+        if(mode == 2'b10 || mode == 2'b11) begin //active in squash and practice mode
+            if(x_ff == 11'd489 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat) begin
+                xh_nxt = 1'b0;
+                x_nxt = 11'd488;
+                if(mode == 2'b11) begin
+                    p1_score_nxt = p1_score_ff + 1;
                 end
             end
         end
 
         //vertical collisions
-                if(y_ff <= 11'd30) begin
-                    yh_nxt = 1'b1;
-                    y_nxt = 11'd31;
-                end
+        if(y_ff <= 11'd30) begin
+            yh_nxt = 1'b1;
+            y_nxt = 11'd31;
+        end
 
-                if(y_ff >= 11'd450) begin
-                    yh_nxt = 1'b0;
-                    y_nxt = 11'd445;
-                end
+        if(y_ff >= 11'd450) begin
+            yh_nxt = 1'b0;
+            y_nxt = 11'd445;
+        end
         
     end
 
