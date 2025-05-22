@@ -1,4 +1,4 @@
-module top(input clk, rst, ball_speed, angle, bat_size, p1p, p1m, p2p, p2m, input[1:0] mode, output [9:0] RED, GRN, BLU, output HSYNC, VSYNC, px_clk, blank);
+module top(input clk, rst, ball_speed, serve_type, angle, bat_size, serve, start, p1p, p1m, p2p, p2m, input[1:0] mode, max_score, output [9:0] RED, GRN, BLU, output HSYNC, VSYNC, px_clk, blank);
     wire [10:0] x, y, p1_y, p2_y, bx, by;
     wire px_data_out;
     wire [29:0] px_data_in;
@@ -17,7 +17,7 @@ module top(input clk, rst, ball_speed, angle, bat_size, p1p, p1m, p2p, p2m, inpu
     debouncer d4(px_clk, rst, p2m, wp2m);
     paddle_controller_btn pctrl(clk, rst, wp1p, wp1m, wp2p, wp2m, bat_size, p1_y, p2_y);
     clk_divider clk_divider(clk, rst, px_clk);
-    game_controller game_controller(clk, rst, p1_y, p2_y, mode, ball_speed, 1'b0, angle, bat_size, 1'b0, score1, score2, p1_y, p2_y, bx, by);
+    game_controller game_controller(clk, rst, p1_y, p2_y, mode, max_score, ball_speed, serve_type, angle, bat_size, !serve, !start, score1, score2, p1_y, p2_y, bx, by);
     video_encoder video_encoder(clk, rst, bat_size, mode, score1, score2, p1_y, p2_y, bx, by, x, y, px_data_out);
     vga_controller vga_controller(px_clk, rst, px_data_in, x, y, RED, GRN, BLU, HSYNC, VSYNC);
 endmodule
