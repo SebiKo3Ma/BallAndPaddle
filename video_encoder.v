@@ -38,6 +38,105 @@ module video_encoder(input        clk, rst,
     segments_lut segl(p1_score, scl);
     segments_lut segr(p2_score, scr);
 
+    function automatic [2:0] column;
+        input [10:0] tlx;
+        input [6:0] size, size2, size3, size4, size5;
+        begin
+            if(x >= tlx && x < tlx + size) begin
+                column = 0;
+            end else
+            if(x >= tlx + size && x < tlx + size2) begin
+                column = 1;
+            end else
+            if(x >= tlx + size2 && x < tlx + size3) begin
+                column = 2;
+            end else
+            if(x >= tlx + size3 && x < tlx + size4) begin
+                column = 3;
+            end else
+            if(x >= tlx + size4 && x < tlx + size5) begin
+                column = 4;
+            end else column = 5;
+        end
+    endfunction
+    
+    function automatic letter_data;
+        input [10:0] tlx, tly, x, y;
+        input [4:0] letter;
+        input [3:0] size;
+        
+        reg [0:29] seg;
+        reg [6:0] size2, size3, size4, size5, size6;
+        reg[2:0] col;
+
+        begin
+            case(letter)
+                5'd0  : seg = 30'b01110_10001_11111_10001_10001_10001; //A
+                5'd1  : seg = 30'b11110_10001_11110_10001_10001_11110; //B
+                5'd2  : seg = 30'b01110_10001_10000_10000_10001_01110; //C
+                5'd3  : seg = 30'b11110_10001_10001_10001_10001_11110; //D
+                5'd4  : seg = 30'b11111_10000_11100_10000_10000_11111; //E
+                5'd5  : seg = 30'b11111_10000_11100_10000_10000_10000; //F
+                5'd6  : seg = 30'b01110_10001_10000_10011_10001_01110; //G
+                5'd7  : seg = 30'b10001_10001_10001_11111_10001_10001; //H
+                5'd8  : seg = 30'b01110_00100_00100_00100_00100_01110; //I
+                5'd9  : seg = 30'b00010_00010_00010_00010_01010_00100; //J
+                5'd10 : seg = 30'b10001_10010_11100_10010_10001_10001; //K
+                5'd11 : seg = 30'b10000_10000_10000_10000_10000_11111; //L
+                5'd12 : seg = 30'b10001_11011_10101_10001_10001_10001; //M
+                5'd13 : seg = 30'b10001_11001_10101_10011_10001_10001; //N
+                5'd14 : seg = 30'b01110_10001_10001_10001_10001_01110; //O
+                5'd15 : seg = 30'b11110_10001_11110_10000_10000_10000; //P
+                5'd16 : seg = 30'b01100_10010_10010_10010_10010_01101; //Q
+                5'd17 : seg = 30'b11110_10001_11110_10100_10010_10001; //R
+                5'd18 : seg = 30'b01111_10000_01110_00001_00001_11110; //S
+                5'd19 : seg = 30'b11111_00100_00100_00100_00100_00100; //T
+                5'd20 : seg = 30'b10001_10001_10001_10001_10001_01110; //U
+                5'd21 : seg = 30'b10001_10001_10001_01010_01010_00100; //V
+                5'd22 : seg = 30'b10001_10001_10001_10101_10101_01010; //W
+                5'd23 : seg = 30'b10001_01010_00100_01010_10001_10001; //X
+                5'd24 : seg = 30'b10001_01010_00100_00100_00100_00100; //Y
+                5'd25 : seg = 30'b11111_00010_00100_01000_10000_11111; //Z
+                5'd26 : seg = 30'b00100_00100_00100_00100_00000_00100; //!
+                5'd27 : seg = 30'b00100_01010_00010_00100_00000_00100; //?
+                5'd28 : seg = 30'b00000_00000_00000_00000_00000_00100; //.
+                5'd29 : seg = 30'b00000_00000_01110_00000_00000_00000; //-
+                5'd30 : seg = 30'b00000_00000_00000_00000_00000_00000; //
+                5'd31 : seg = 30'b00000_00000_00000_00000_00000_00000; //space
+
+                default: seg = 30'b00000_00000_00000_00000_00000_00000;
+            endcase
+
+            size2 = size  + size;
+            size3 = size2 + size;
+            size4 = size3 + size;
+            size5 = size4 + size;
+            size6 = size5 + size;
+            col = column(tlx, size, size2, size3, size4, size5);
+
+            if(col != 5) begin
+                if(y >= tly && y < tly + size ) begin
+                    if(seg[col]) letter_data = 1'b1;
+                end
+                if(y >= tly + size  && y < tly + size2) begin
+                    if(seg[5 + col]) letter_data = 1'b1;
+                end
+                if(y >= tly + size2 && y < tly + size3) begin
+                    if(seg[10 + col]) letter_data = 1'b1;
+                end
+                if(y >= tly + size3 && y < tly + size4) begin
+                    if(seg[15 + col]) letter_data = 1'b1;
+                end
+                if(y >= tly + size4 && y < tly + size5) begin
+                    if(seg[20 + col]) letter_data = 1'b1;
+                end
+                if(y >= tly + size5 && y < tly + size6) begin
+                    if(seg[25 + col]) letter_data = 1'b1;
+                end
+            end
+        end
+    endfunction
+
     always @* begin
         ML_nxt  = ML_ff ;
         FBL_nxt = FBL_ff;
@@ -50,6 +149,8 @@ module video_encoder(input        clk, rst,
         P2S_nxt = P2S_ff;
         size_nxt = size_ff;
         px_data_nxt = 1'b0;
+
+        if(x >= 80  && x < 100) px_data_nxt = letter_data(11'd80 , 11'd80, x, y, 5'd12, 4'd3);
 
         //enable components of the field based on the game mode
         case(mode)
