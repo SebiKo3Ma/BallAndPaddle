@@ -9,6 +9,8 @@ module game_controller( input clk, rst,
                                       bat_size,   // small / large
                                       serve,      // serve trigger
                                       start,
+                        output        p1_win,
+                                      p2_win,
                         output [4:0]  p1_score,   // score for player 1
                                       p2_score,   // score for player 2
                         output [10:0] p1_y,       // vertical position of player 1
@@ -34,11 +36,14 @@ module game_controller( input clk, rst,
     reg [4:0] p1_score_ff, p1_score_nxt, p2_score_ff, p2_score_nxt; //player scores flip-flops
     reg turn_ff, turn_nxt; //squash player turn flip-flop
     reg [4:0] win_score;
+    reg win1_ff, win1_nxt, win2_ff, win2_nxt;
 
     //player paddle registers
     reg [4:0] bat;
 
     //output assignments
+    assign p1_win = win1_ff;
+    assign p2_win = win2_ff;
     assign p1_score = p1_score_ff;
     assign p2_score = p2_score_ff;
     assign p1_y = p1_in;
@@ -53,6 +58,8 @@ module game_controller( input clk, rst,
         p1_score_nxt = p1_score_ff;
         p2_score_nxt = p2_score_ff;
         turn_nxt = turn_ff;
+        win1_nxt = win1_ff;
+        win2_nxt = win2_ff;
 
         counter_nxt = counter_ff + 1;
         mini_counter_nxt = mini_counter_ff;
@@ -67,6 +74,12 @@ module game_controller( input clk, rst,
             START : begin
                 p1_score_nxt = 5'b0;
                 p2_score_nxt = 5'b0;
+                win1_nxt = 1'b0;
+                win2_nxt = 1'b0;
+                x_nxt = 11'd60;
+                y_nxt = 11'd60;
+                xh_nxt = 1'b1;
+                yh_nxt = 1'b1;
                 ball_en_nxt = 1'b0;
 
                 if(start) state_nxt = GAME;
@@ -82,6 +95,9 @@ module game_controller( input clk, rst,
 
                 if(p1_score_ff == win_score || p2_score_ff == win_score) begin
                     state_nxt = ENDG;
+                    if(p1_score_ff > p2_score_ff)
+                        win1_nxt = 1'b1;
+                    else win2_nxt = 1'b1;
                 end
             end
 
@@ -273,6 +289,8 @@ module game_controller( input clk, rst,
             p2_score_ff <= 5'd0;
             turn_ff <= 1'b0;
             win_score <= 5'd10;
+            win1_ff <= 1'b0;
+            win2_ff <= 1'b0;
 
             counter_ff <= 16'd1;
             mini_counter_ff <= 2'd1;
@@ -290,6 +308,9 @@ module game_controller( input clk, rst,
                 p1_score_ff <= p1_score_nxt;
                 p2_score_ff <= p2_score_nxt;
             end
+
+            win1_ff <= win1_nxt;
+            win2_ff <= win2_nxt;
 
             turn_ff <= turn_nxt;
 
