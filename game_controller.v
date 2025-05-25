@@ -36,6 +36,8 @@ module game_controller( input clk, rst,
     reg [16:0] counter_ff, counter_nxt;  //counter for ball movement speed
     reg mini_counter_ff, mini_counter_nxt;
     reg ball_en_ff, ball_en_nxt;
+    reg [4:0] rand_pos_ff, rand_pos_nxt;
+    reg [1:0] move_counter_ff, move_counter_nxt;
 
     //score registers
     reg [4:0] p1_score_ff, p1_score_nxt, p2_score_ff, p2_score_nxt; //player scores flip-flops
@@ -59,6 +61,47 @@ module game_controller( input clk, rst,
     assign ball_x = x_ff;
     assign ball_y = y_ff;
 
+    function [1:0] angles;
+        input [4:0] pos;
+
+        case(pos)
+            5'd0  : angles = 2'd0;
+            5'd1  : angles = 2'd1;
+            5'd2  : angles = 2'd2;
+            5'd3  : angles = 2'd1;
+            5'd4  : angles = 2'd2;
+            5'd5  : angles = 2'd0;
+            5'd6  : angles = 2'd0;
+            5'd7  : angles = 2'd2;
+            5'd8  : angles = 2'd1;
+            5'd9  : angles = 2'd0;
+            5'd10 : angles = 2'd1;
+            5'd11 : angles = 2'd0;
+            5'd12 : angles = 2'd1;
+            5'd13 : angles = 2'd2;
+            5'd14 : angles = 2'd2;
+            5'd15 : angles = 2'd0;
+            5'd16 : angles = 2'd2;
+            5'd17 : angles = 2'd1;
+            5'd18 : angles = 2'd2;
+            5'd19 : angles = 2'd0;
+            5'd20 : angles = 2'd0;
+            5'd21 : angles = 2'd2;
+            5'd22 : angles = 2'd1;
+            5'd23 : angles = 2'd0;
+            5'd24 : angles = 2'd1;
+            5'd25 : angles = 2'd0;
+            5'd26 : angles = 2'd2;
+            5'd27 : angles = 2'd1;
+            5'd28 : angles = 2'd1;
+            5'd29 : angles = 2'd0;
+            5'd30 : angles = 2'd0;
+            5'd31 : angles = 2'd2;
+
+            default : angles = 2'd0;
+        endcase
+    endfunction
+
 
     always @* begin
         state_nxt = state_ff;
@@ -72,6 +115,9 @@ module game_controller( input clk, rst,
 
         counter_nxt = counter_ff + 17'd1;
         mini_counter_nxt = mini_counter_ff;
+        move_counter_nxt = move_counter_ff;
+        rand_pos_nxt = rand_pos_ff;
+
         x_nxt = x_ff;
         y_nxt = y_ff;
         xh_nxt = xh_ff;
@@ -123,16 +169,21 @@ module game_controller( input clk, rst,
 
         //ball movement
         if((!mini_counter_ff || ball_speed) && !counter_ff && ball_en_ff) begin
+            move_counter_nxt = move_counter_ff + 1'b1;
+
             if(xh_ff) begin
                 x_nxt = x_ff + 11'd1;
             end else begin
                 x_nxt = x_ff - 11'd1;
             end
-
-            if(yh_ff) begin
-                y_nxt = y_ff + 11'd1;
-            end else begin
-                y_nxt = y_ff - 11'd1;
+            
+            if(!angle || move_counter_ff == angles(rand_pos_ff)) begin
+                move_counter_nxt = 2'b00;
+                if(yh_ff) begin
+                    y_nxt = y_ff + 11'd1;
+                end else begin
+                    y_nxt = y_ff - 11'd1;
+                end
             end
         end
 
@@ -160,6 +211,7 @@ module game_controller( input clk, rst,
                     if(!(y_ff >= 11'd134 && y_ff <= 11'd344)) begin
                         xh_nxt = 1'b1;
                         x_nxt = 11'd31;
+                        rand_pos_nxt = rand_pos_ff + 2'd1;
                     end else if(x_ff <= 11'd15) begin
                         xh_nxt = 1'b1;
                         x_nxt = 11'd340;
@@ -172,6 +224,7 @@ module game_controller( input clk, rst,
                     if(!(y_ff >= 11'd134 && y_ff <= 11'd344)) begin
                         xh_nxt = 1'b0;
                         x_nxt = 11'd609;
+                        rand_pos_nxt = rand_pos_ff + 2'd1;
                     end else if(x_ff >= 11'd625) begin
                         xh_nxt = 1'b0;
                         x_nxt = 11'd300;
@@ -187,6 +240,7 @@ module game_controller( input clk, rst,
                     xh_nxt = 1'b1;
                     x_nxt = 11'd31;
                     turn_nxt = turn_ff + 1'b1;
+                    rand_pos_nxt = rand_pos_ff + 2'd1;
                 end
 
                 if(x_ff >= 625) begin
@@ -205,6 +259,7 @@ module game_controller( input clk, rst,
                 if(x_ff <= 11'd30) begin
                     xh_nxt = 1'b1;
                     x_nxt = 11'd31;
+                    rand_pos_nxt = rand_pos_ff + 2'd1;
                 end
 
                 if(x_ff >= 11'd625) begin
@@ -223,11 +278,13 @@ module game_controller( input clk, rst,
             if(x_ff == 11'd45 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat) begin
                 xh_nxt = 1'b1;
                 x_nxt = 11'd46;
+                rand_pos_nxt = rand_pos_ff + 2'd1;
             end
 
             if(x_ff == 11'd595 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat) begin
                 xh_nxt = 1'b0;
                 x_nxt = 11'd594;
+                rand_pos_nxt = rand_pos_ff + 2'd1;
             end
         end
 
@@ -236,6 +293,7 @@ module game_controller( input clk, rst,
             if(x_ff == 11'd489 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat) begin
                 xh_nxt = 1'b1;
                 x_nxt = 11'd490;
+                rand_pos_nxt = rand_pos_ff + 2'd1;
 
                 if(y_ff < 11'd240) begin
                     yh_nxt = 1'b1;
@@ -247,6 +305,7 @@ module game_controller( input clk, rst,
             if(x_ff == 11'd155 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat) begin
                 xh_nxt = 1'b0;
                 x_nxt = 11'd154;
+                rand_pos_nxt = rand_pos_ff + 2'd1;
 
                 if(y_ff < 11'd240) begin
                     yh_nxt = 1'b1;
@@ -261,6 +320,7 @@ module game_controller( input clk, rst,
             if(x_ff == 11'd505 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat && turn_ff) begin
                 xh_nxt = 1'b0;
                 x_nxt = 11'd504;
+                rand_pos_nxt = rand_pos_ff + 2'd1;
             end
         end
 
@@ -269,6 +329,7 @@ module game_controller( input clk, rst,
             if(x_ff == 11'd489 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat && !turn_ff) begin
                 xh_nxt = 1'b0;
                 x_nxt = 11'd488;
+                rand_pos_nxt = rand_pos_ff + 2'd1;
                 if(mode_ff== 2'b11) begin
                     p1_score_nxt = p1_score_ff + 5'd1;
                     if(p1_score_ff >= max_score) state_nxt = SERVE;
@@ -280,11 +341,13 @@ module game_controller( input clk, rst,
         if(y_ff <= 11'd30) begin
             yh_nxt = 1'b1;
             y_nxt = 11'd31;
+            rand_pos_nxt = rand_pos_ff + 2'd1;
         end
 
         if(y_ff >= 11'd450) begin
             yh_nxt = 1'b0;
             y_nxt = 11'd445;
+            rand_pos_nxt = rand_pos_ff + 2'd1;
         end
         
     end
@@ -304,6 +367,8 @@ module game_controller( input clk, rst,
 
             counter_ff <= 17'd1;
             mini_counter_ff <= 1'b1;
+            move_counter_ff <= 1'b1;
+            rand_pos_ff <= 5'd0;
             x_ff <= 11'd60;
             y_ff <= 11'd60;
             xh_ff <= 1'b1;
@@ -331,6 +396,8 @@ module game_controller( input clk, rst,
 
             counter_ff <= counter_nxt;
             mini_counter_ff <= mini_counter_nxt;
+            move_counter_ff <= move_counter_nxt;
+            rand_pos_ff <= rand_pos_nxt;
             x_ff <= x_nxt;
             y_ff <= y_nxt;
             xh_ff <= xh_nxt;
