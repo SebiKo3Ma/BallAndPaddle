@@ -11,6 +11,7 @@ module game_controller( input clk, rst,
                                       start,
                         output        p1_win,
                                       p2_win,
+                        output [1:0]  mode_out,
                         output [4:0]  p1_score,   // score for player 1
                                       p2_score,   // score for player 2
                         output [10:0] p1_y,       // vertical position of player 1
@@ -24,6 +25,7 @@ module game_controller( input clk, rst,
                     ENDG  = 2'b11;
 
     reg [1:0] state_ff, state_nxt;
+    reg [1:0] mode_ff, mode_nxt;
 
     //ball registers
     reg [10:0] x_ff, x_nxt, y_ff, y_nxt; //ball position flip-flops
@@ -42,6 +44,7 @@ module game_controller( input clk, rst,
     reg [4:0] bat;
 
     //output assignments
+    assign mode_out = mode_ff;
     assign p1_win = win1_ff;
     assign p2_win = win2_ff;
     assign p1_score = p1_score_ff;
@@ -54,6 +57,7 @@ module game_controller( input clk, rst,
 
     always @* begin
         state_nxt = state_ff;
+        mode_nxt = mode_ff;
 
         p1_score_nxt = p1_score_ff;
         p2_score_nxt = p2_score_ff;
@@ -72,6 +76,7 @@ module game_controller( input clk, rst,
         //game state machine
         case(state_ff)
             START : begin
+                mode_nxt = mode;
                 p1_score_nxt = 5'b0;
                 p2_score_nxt = 5'b0;
                 win1_nxt = 1'b0;
@@ -126,7 +131,7 @@ module game_controller( input clk, rst,
             end
         end
 
-        case(mode)
+        case(mode_ff)
             2'b00 : begin //tennis collisions and score
                 //horizontal collisions
                 if(x_ff <= 11'd15) begin
@@ -212,7 +217,7 @@ module game_controller( input clk, rst,
 
         //paddle collisions
         //player main paddles
-        if(mode == 2'b00 || mode == 2'b01) begin //active in tennis and football
+        if(mode_ff== 2'b00 || mode_ff== 2'b01) begin //active in tennis and football
             if(x_ff == 11'd45 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat) begin
                 xh_nxt = 1'b1;
                 x_nxt = 11'd46;
@@ -225,7 +230,7 @@ module game_controller( input clk, rst,
         end
 
         //player football forwards
-        if(mode == 2'b01) begin //active in football mode
+        if(mode_ff== 2'b01) begin //active in football mode
             if(x_ff == 11'd489 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat) begin
                 xh_nxt = 1'b1;
                 x_nxt = 11'd490;
@@ -250,7 +255,7 @@ module game_controller( input clk, rst,
         end
 
         //player 2 squash paddle
-        if(mode == 2'b10) begin //active in squash mode
+        if(mode_ff== 2'b10) begin //active in squash mode
             if(x_ff == 11'd505 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat) begin
                 xh_nxt = 1'b0;
                 x_nxt = 11'd504;
@@ -258,11 +263,11 @@ module game_controller( input clk, rst,
         end
 
         //player 1 squash paddle
-        if(mode == 2'b10 || mode == 2'b11) begin //active in squash and practice mode
+        if(mode_ff== 2'b10 || mode_ff== 2'b11) begin //active in squash and practice mode
             if(x_ff == 11'd489 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat) begin
                 xh_nxt = 1'b0;
                 x_nxt = 11'd488;
-                if(mode == 2'b11) begin
+                if(mode_ff== 2'b11) begin
                     p1_score_nxt = p1_score_ff + 1;
                 end
             end
@@ -284,6 +289,7 @@ module game_controller( input clk, rst,
     always @(posedge clk or posedge rst) begin
         if(rst) begin 
             state_ff <= START;
+            mode_ff <= 2'b00;
 
             p1_score_ff <= 5'd0;
             p2_score_ff <= 5'd0;
@@ -303,6 +309,7 @@ module game_controller( input clk, rst,
             bat <= 5'd25;
         end else begin
             state_ff <= state_nxt;
+            mode_ff <= mode_nxt;
 
             if(state_ff != ENDG) begin
                 p1_score_ff <= p1_score_nxt;
