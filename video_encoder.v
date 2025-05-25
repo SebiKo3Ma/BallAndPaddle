@@ -2,6 +2,7 @@ module video_encoder(input        clk, rst,
                                   bat_size,
                                   p1_win,
                                   p2_win,
+                                  turn,
                      input [1:0]  mode,
                      input [4:0]  p1_score,
                                   p2_score,
@@ -103,8 +104,8 @@ module video_encoder(input        clk, rst,
                 5'd27 : seg = 30'b00100_01010_00010_00100_00000_00100; //?
                 5'd28 : seg = 30'b00000_00000_00000_00000_00000_00100; //.
                 5'd29 : seg = 30'b00000_00000_01110_00000_00000_00000; //-
-                5'd30 : seg = 30'b00000_00000_00000_00000_00000_00000; //
-                5'd31 : seg = 30'b00000_00000_00000_00000_00000_00000; //space
+                5'd30 : seg = 30'b00100_01100_10100_00100_00100_00100; //1
+                5'd31 : seg = 30'b01110_10001_00010_00100_01000_11111; //2
 
                 default: seg = 30'b00000_00000_00000_00000_00000_00000;
             endcase
@@ -506,6 +507,18 @@ module video_encoder(input        clk, rst,
 
         
         //if(x >= 80  && x < 100) px_data_nxt = letter_data(11'd80 , 11'd80, x, y, 5'd12, 4'd3);
+
+        //track squash turns
+        if(mode == 2'b10) begin
+            if(x >= 550  && x < 570 && y >= 50 && y < 70) px_data_nxt = letter_data(11'd550 , 11'd50, x, y, 5'd15, 4'd3);
+            if(x >= 570  && x < 590 && y >= 50 && y < 70) begin
+                if(!turn) begin
+                    px_data_nxt = letter_data(11'd570 , 11'd50, x, y, 5'd30, 4'd3);
+                end else begin
+                    px_data_nxt = letter_data(11'd570 , 11'd50, x, y, 5'd31, 4'd3);
+                end
+            end                 
+        end
 
         //show winners
 

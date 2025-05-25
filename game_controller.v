@@ -11,6 +11,7 @@ module game_controller( input clk, rst,
                                       start,
                         output        p1_win,
                                       p2_win,
+                                      turn,
                         output [1:0]  mode_out,
                         output [4:0]  p1_score,   // score for player 1
                                       p2_score,   // score for player 2
@@ -47,6 +48,7 @@ module game_controller( input clk, rst,
     assign mode_out = mode_ff;
     assign p1_win = win1_ff;
     assign p2_win = win2_ff;
+    assign turn = turn_ff;
     assign p1_score = p1_score_ff;
     assign p2_score = p2_score_ff;
     assign p1_y = p1_in;
@@ -86,6 +88,7 @@ module game_controller( input clk, rst,
                 xh_nxt = 1'b1;
                 yh_nxt = 1'b1;
                 ball_en_nxt = 1'b0;
+                turn_nxt = 1'b0;
 
                 if(start) state_nxt = GAME;
             end
@@ -252,7 +255,7 @@ module game_controller( input clk, rst,
 
         //player 2 squash paddle
         if(mode_ff== 2'b10) begin //active in squash mode
-            if(x_ff == 11'd505 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat) begin
+            if(x_ff == 11'd505 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat && turn_ff) begin
                 xh_nxt = 1'b0;
                 x_nxt = 11'd504;
             end
@@ -260,7 +263,7 @@ module game_controller( input clk, rst,
 
         //player 1 squash paddle
         if(mode_ff== 2'b10 || mode_ff== 2'b11) begin //active in squash and practice mode
-            if(x_ff == 11'd489 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat) begin
+            if(x_ff == 11'd489 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat && !turn_ff) begin
                 xh_nxt = 1'b0;
                 x_nxt = 11'd488;
                 if(mode_ff== 2'b11) begin
