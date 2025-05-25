@@ -96,14 +96,13 @@ module game_controller( input clk, rst,
 
             SERVE : begin
                 ball_en_nxt = 1'b0;
-                if(serve || !serve_type) state_nxt = GAME;
 
-                if(p1_score_ff == win_score || p2_score_ff == win_score) begin
+                if(p1_score_ff >= win_score || p2_score_ff >= win_score) begin
                     state_nxt = ENDG;
                     if(p1_score_ff > p2_score_ff)
                         win1_nxt = 1'b1;
                     else win2_nxt = 1'b1;
-                end
+                end else if(serve || !serve_type) state_nxt = GAME;
             end
 
             ENDG  : begin
@@ -193,8 +192,6 @@ module game_controller( input clk, rst,
                         p2_score_nxt = p2_score_ff + 1;
                         if(state_ff == GAME) state_nxt = SERVE;
                     end
-
-                    //xh_nxt = 1'b0; //temp for debug, remove when adding paddle collisions
                 end
             end
 
@@ -205,10 +202,9 @@ module game_controller( input clk, rst,
                 end
 
                 if(x_ff >= 11'd625) begin
-                    x_nxt = 11'd280;
+                    x_nxt = 11'd150;
                     p2_score_nxt = p2_score_ff + 1;
                     if(state_ff == GAME) state_nxt = SERVE;
-                    //xh_nxt = 1'b0; //temp for debug, remove when adding paddle collisions
                 end
 
                 //p1 score to be added with paddle
@@ -269,6 +265,7 @@ module game_controller( input clk, rst,
                 x_nxt = 11'd488;
                 if(mode_ff== 2'b11) begin
                     p1_score_nxt = p1_score_ff + 1;
+                    if(p1_score_ff >= max_score) state_nxt = SERVE;
                 end
             end
         end
