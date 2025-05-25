@@ -22,7 +22,7 @@ module vga_controller(input px_clk, rst, input[29:0] px_data, output[10:0] px_h,
     always @* begin
         hs_nxt = hs_ff;
         vs_nxt = vs_ff;
-        hcount_nxt = hcount_ff + 1;
+        hcount_nxt = hcount_ff + 11'd1;
         vcount_nxt = vcount_ff;
         polarity_nxt = polarity;
         h_data_nxt = h_data;
@@ -40,7 +40,7 @@ module vga_controller(input px_clk, rst, input[29:0] px_data, output[10:0] px_h,
         //horizontal zero detect
         if(hcount_ff == h_total - 1) begin
             hcount_nxt = 10'd0;
-            vcount_nxt = vcount_ff + 1;
+            vcount_nxt = vcount_ff + 11'd1;
         end
 
         //horizontal sync start

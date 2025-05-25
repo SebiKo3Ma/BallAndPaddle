@@ -70,7 +70,7 @@ module game_controller( input clk, rst,
         win1_nxt = win1_ff;
         win2_nxt = win2_ff;
 
-        counter_nxt = counter_ff + 1;
+        counter_nxt = counter_ff + 17'd1;
         mini_counter_nxt = mini_counter_ff;
         x_nxt = x_ff;
         y_nxt = y_ff;
@@ -118,21 +118,21 @@ module game_controller( input clk, rst,
         endcase
 
         if(!counter_ff) begin
-            mini_counter_nxt = mini_counter_ff + 1;
+            mini_counter_nxt = mini_counter_ff + 1'b1;
         end
 
         //ball movement
         if((!mini_counter_ff || ball_speed) && !counter_ff && ball_en_ff) begin
             if(xh_ff) begin
-                x_nxt = x_ff + 1;
+                x_nxt = x_ff + 11'd1;
             end else begin
-                x_nxt = x_ff - 1;
+                x_nxt = x_ff - 11'd1;
             end
 
             if(yh_ff) begin
-                y_nxt = y_ff + 1;
+                y_nxt = y_ff + 11'd1;
             end else begin
-                y_nxt = y_ff - 1;
+                y_nxt = y_ff - 11'd1;
             end
         end
 
@@ -142,14 +142,14 @@ module game_controller( input clk, rst,
                 if(x_ff <= 11'd15) begin
                     xh_nxt = 1'b1;
                     x_nxt = 11'd340;
-                    p2_score_nxt = p2_score_ff + 1;
+                    p2_score_nxt = p2_score_ff + 5'd1;
                     if(state_ff == GAME) state_nxt = SERVE;
                 end
 
                 if(x_ff >= 11'd625) begin
                     xh_nxt = 1'b0;
                     x_nxt = 11'd300;
-                    p1_score_nxt = p1_score_ff + 1;
+                    p1_score_nxt = p1_score_ff + 5'd1;
                     if(state_ff == GAME) state_nxt = SERVE;
                 end
             end
@@ -163,7 +163,7 @@ module game_controller( input clk, rst,
                     end else if(x_ff <= 11'd15) begin
                         xh_nxt = 1'b1;
                         x_nxt = 11'd340;
-                        p2_score_nxt = p2_score_ff + 1;
+                        p2_score_nxt = p2_score_ff + 5'd1;
                         if(state_ff == GAME) state_nxt = SERVE;
                     end
                 end
@@ -175,7 +175,7 @@ module game_controller( input clk, rst,
                     end else if(x_ff >= 11'd625) begin
                         xh_nxt = 1'b0;
                         x_nxt = 11'd300;
-                        p1_score_nxt = p1_score_ff + 1;
+                        p1_score_nxt = p1_score_ff + 5'd1;
                         if(state_ff == GAME) state_nxt = SERVE;
                     end
                 end
@@ -186,16 +186,16 @@ module game_controller( input clk, rst,
                 if(x_ff <= 11'd30) begin
                     xh_nxt = 1'b1;
                     x_nxt = 11'd31;
-                    turn_nxt = turn_ff + 1;
+                    turn_nxt = turn_ff + 1'b1;
                 end
 
                 if(x_ff >= 625) begin
                     x_nxt = 11'd280;
                     if(turn_ff) begin
-                        p1_score_nxt = p1_score_ff + 1;
+                        p1_score_nxt = p1_score_ff + 5'd1;
                         if(state_ff == GAME) state_nxt = SERVE;
                     end else begin
-                        p2_score_nxt = p2_score_ff + 1;
+                        p2_score_nxt = p2_score_ff + 5'd1;
                         if(state_ff == GAME) state_nxt = SERVE;
                     end
                 end
@@ -209,7 +209,7 @@ module game_controller( input clk, rst,
 
                 if(x_ff >= 11'd625) begin
                     x_nxt = 11'd150;
-                    p2_score_nxt = p2_score_ff + 1;
+                    p2_score_nxt = p2_score_ff + 5'd1;
                     if(state_ff == GAME) state_nxt = SERVE;
                 end
 
@@ -270,7 +270,7 @@ module game_controller( input clk, rst,
                 xh_nxt = 1'b0;
                 x_nxt = 11'd488;
                 if(mode_ff== 2'b11) begin
-                    p1_score_nxt = p1_score_ff + 1;
+                    p1_score_nxt = p1_score_ff + 5'd1;
                     if(p1_score_ff >= max_score) state_nxt = SERVE;
                 end
             end

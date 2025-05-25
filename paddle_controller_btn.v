@@ -8,23 +8,23 @@ module paddle_controller_btn(input clk, rst, p1p, p1m, p2p, p2m, bat_size, outpu
     always @* begin
         p1_nxt = p1_ff;
         p2_nxt = p2_ff;
-        counter_nxt = counter_ff + 1;
+        counter_nxt = counter_ff + 17'd1;
 
         if(!counter_ff) begin
             if(!p1p) begin
-                p1_nxt = p1_ff + 1;
+                p1_nxt = p1_ff + 11'd1;
             end
 
             if(!p1m) begin
-                p1_nxt = p1_ff - 1;
+                p1_nxt = p1_ff - 11'd1;
             end
 
             if(!p2p) begin
-                p2_nxt = p2_ff + 1;
+                p2_nxt = p2_ff + 11'd1;
             end
 
             if(!p2m) begin
-                p2_nxt = p2_ff - 1;
+                p2_nxt = p2_ff - 11'd1;
             end
         end
 
