@@ -33,8 +33,8 @@ module game_controller( input clk, rst,
     //ball registers
     reg [10:0] x_ff, x_nxt, y_ff, y_nxt; //ball position flip-flops
     reg xh_ff, xh_nxt, yh_ff, yh_nxt;    //ball heading flip-flops
-    reg [15:0] counter_ff, counter_nxt;  //counter for ball movement speed
-    reg [1:0] mini_counter_ff, mini_counter_nxt;
+    reg [16:0] counter_ff, counter_nxt;  //counter for ball movement speed
+    reg mini_counter_ff, mini_counter_nxt;
     reg ball_en_ff, ball_en_nxt;
 
     //score registers
@@ -302,8 +302,8 @@ module game_controller( input clk, rst,
             win1_ff <= 1'b0;
             win2_ff <= 1'b0;
 
-            counter_ff <= 16'd1;
-            mini_counter_ff <= 2'd1;
+            counter_ff <= 17'd1;
+            mini_counter_ff <= 1'b1;
             x_ff <= 11'd60;
             y_ff <= 11'd60;
             xh_ff <= 1'b1;
