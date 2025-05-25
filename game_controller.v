@@ -211,7 +211,6 @@ module game_controller( input clk, rst,
                     if(!(y_ff >= 11'd134 && y_ff <= 11'd344)) begin
                         xh_nxt = 1'b1;
                         x_nxt = 11'd31;
-                        rand_pos_nxt = rand_pos_ff + 2'd1;
                     end else if(x_ff <= 11'd15) begin
                         xh_nxt = 1'b1;
                         x_nxt = 11'd340;
@@ -224,7 +223,6 @@ module game_controller( input clk, rst,
                     if(!(y_ff >= 11'd134 && y_ff <= 11'd344)) begin
                         xh_nxt = 1'b0;
                         x_nxt = 11'd609;
-                        rand_pos_nxt = rand_pos_ff + 2'd1;
                     end else if(x_ff >= 11'd625) begin
                         xh_nxt = 1'b0;
                         x_nxt = 11'd300;
@@ -341,13 +339,11 @@ module game_controller( input clk, rst,
         if(y_ff <= 11'd30) begin
             yh_nxt = 1'b1;
             y_nxt = 11'd31;
-            rand_pos_nxt = rand_pos_ff + 2'd1;
         end
 
         if(y_ff >= 11'd450) begin
             yh_nxt = 1'b0;
             y_nxt = 11'd445;
-            rand_pos_nxt = rand_pos_ff + 2'd1;
         end
         
     end
