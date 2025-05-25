@@ -3,6 +3,7 @@ module video_encoder(input        clk, rst,
                                   p1_win,
                                   p2_win,
                                   turn,
+                                  start_state,
                      input [1:0]  mode,
                      input [4:0]  p1_score,
                                   p2_score,
@@ -560,7 +561,21 @@ module video_encoder(input        clk, rst,
                 end
             end
         end
-    end        
+
+        //instructions
+        if(start_state) begin
+            if(x >= 70  && x < 85  && y >= 380 && y < 400) px_data_nxt = letter_data(11'd70 , 11'd380, x, y, 5'd15, 4'd2);
+            if(x >= 85  && x < 100 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd85 , 11'd380, x, y, 5'd17, 4'd2);
+            if(x >= 100 && x < 115 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd100, 11'd380, x, y, 5'd4 , 4'd2);
+            if(x >= 115 && x < 130 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd115, 11'd380, x, y, 5'd18, 4'd2);
+            if(x >= 130 && x < 145 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd130, 11'd380, x, y, 5'd18, 4'd2);
+            if(x >= 160 && x < 175 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd160, 11'd380, x, y, 5'd18, 4'd2);
+            if(x >= 175 && x < 190 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd175, 11'd380, x, y, 5'd19, 4'd2);
+            if(x >= 190 && x < 205 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd190, 11'd380, x, y, 5'd0 , 4'd2);
+            if(x >= 205 && x < 220 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd205, 11'd380, x, y, 5'd17, 4'd2);
+            if(x >= 220 && x < 235 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd220, 11'd380, x, y, 5'd19, 4'd2);
+        end         
+    end     
 
 
     always @(posedge clk or posedge rst) begin

@@ -12,6 +12,7 @@ module game_controller( input clk, rst,
                         output        p1_win,
                                       p2_win,
                                       turn,
+                                      start_state,
                         output [1:0]  mode_out,
                         output [4:0]  p1_score,   // score for player 1
                                       p2_score,   // score for player 2
@@ -27,6 +28,7 @@ module game_controller( input clk, rst,
 
     reg [1:0] state_ff, state_nxt;
     reg [1:0] mode_ff, mode_nxt;
+    reg start_state_ff;
 
     //ball registers
     reg [10:0] x_ff, x_nxt, y_ff, y_nxt; //ball position flip-flops
@@ -46,6 +48,7 @@ module game_controller( input clk, rst,
 
     //output assignments
     assign mode_out = mode_ff;
+    assign start_state = start_state_ff;
     assign p1_win = win1_ff;
     assign p2_win = win2_ff;
     assign turn = turn_ff;
@@ -290,6 +293,7 @@ module game_controller( input clk, rst,
         if(rst) begin 
             state_ff <= START;
             mode_ff <= 2'b00;
+            start_state_ff <= 1'b0;
 
             p1_score_ff <= 5'd0;
             p2_score_ff <= 5'd0;
@@ -315,6 +319,10 @@ module game_controller( input clk, rst,
                 p1_score_ff <= p1_score_nxt;
                 p2_score_ff <= p2_score_nxt;
             end
+
+            if(state_ff == START)
+                start_state_ff <= 1'b1;
+            else start_state_ff <= 1'b0;
 
             win1_ff <= win1_nxt;
             win2_ff <= win2_nxt;
