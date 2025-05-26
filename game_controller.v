@@ -202,7 +202,7 @@ module game_controller( input clk, rst,
                 //horizontal collisions
                 if(x_ff <= 11'd15) begin
                     xh_nxt = 1'b1;
-                    x_nxt = 11'd340;
+                    x_nxt = 11'd160;
                     p2_score_nxt = p2_score_ff + 5'd1;
                     if(state_ff == GAME) state_nxt = SERVE;
                     goal_nxt = 1'b1;
@@ -210,7 +210,7 @@ module game_controller( input clk, rst,
 
                 if(x_ff >= 11'd625) begin
                     xh_nxt = 1'b0;
-                    x_nxt = 11'd300;
+                    x_nxt = 11'd480;
                     p1_score_nxt = p1_score_ff + 5'd1;
                     if(state_ff == GAME) state_nxt = SERVE;
                     goal_nxt = 1'b1;
@@ -226,7 +226,7 @@ module game_controller( input clk, rst,
                         wall_nxt = 1'b1;
                     end else if(x_ff <= 11'd15) begin
                         xh_nxt = 1'b1;
-                        x_nxt = 11'd340;
+                        x_nxt = 11'd160;
                         p2_score_nxt = p2_score_ff + 5'd1;
                         if(state_ff == GAME) state_nxt = SERVE;
                         goal_nxt = 1'b1;
@@ -240,7 +240,7 @@ module game_controller( input clk, rst,
                         wall_nxt = 1'b1;
                     end else if(x_ff >= 11'd625) begin
                         xh_nxt = 1'b0;
-                        x_nxt = 11'd300;
+                        x_nxt = 11'd480;
                         p1_score_nxt = p1_score_ff + 5'd1;
                         if(state_ff == GAME) state_nxt = SERVE;
                         goal_nxt = 1'b1;
@@ -258,7 +258,7 @@ module game_controller( input clk, rst,
                 end
 
                 if(x_ff >= 625) begin
-                    x_nxt = 11'd280;
+                    x_nxt = 11'd100;
                     goal_nxt = 1'b1;
                     if(turn_ff) begin
                         p1_score_nxt = p1_score_ff + 5'd1;
@@ -279,13 +279,13 @@ module game_controller( input clk, rst,
                 end
 
                 if(x_ff >= 11'd625) begin
-                    x_nxt = 11'd150;
+                    x_nxt = 11'd100;
                     p2_score_nxt = p2_score_ff + 5'd1;
                     if(state_ff == GAME) state_nxt = SERVE;
                     goal_nxt = 1'b1;
                 end
 
-                //p1 score to be added with paddle
+                //p1 score with paddle
             end
         endcase
 
