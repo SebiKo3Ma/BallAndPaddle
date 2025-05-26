@@ -13,6 +13,9 @@ module game_controller( input clk, rst,
                                       p2_win,
                                       turn,
                                       start_state,
+                                      hit,
+                                      wall,
+                                      goal,
                         output [1:0]  mode_out,
                         output [4:0]  p1_score,   // score for player 1
                                       p2_score,   // score for player 2
@@ -29,6 +32,7 @@ module game_controller( input clk, rst,
     reg [1:0] state_ff, state_nxt;
     reg [1:0] mode_ff, mode_nxt;
     reg start_state_ff;
+    reg hit_ff, hit_nxt, wall_ff, wall_nxt, goal_ff, goal_nxt;
 
     //ball registers
     reg [10:0] x_ff, x_nxt, y_ff, y_nxt; //ball position flip-flops
@@ -51,6 +55,9 @@ module game_controller( input clk, rst,
     //output assignments
     assign mode_out = mode_ff;
     assign start_state = start_state_ff;
+    assign hit = hit_ff;
+    assign wall = wall_ff;
+    assign goal = goal_ff;
     assign p1_win = win1_ff;
     assign p2_win = win2_ff;
     assign turn = turn_ff;
@@ -106,6 +113,9 @@ module game_controller( input clk, rst,
     always @* begin
         state_nxt = state_ff;
         mode_nxt = mode_ff;
+        hit_nxt = 1'b0;
+        wall_nxt = 1'b0;
+        goal_nxt = 1'b0;
 
         p1_score_nxt = p1_score_ff;
         p2_score_nxt = p2_score_ff;
@@ -195,6 +205,7 @@ module game_controller( input clk, rst,
                     x_nxt = 11'd340;
                     p2_score_nxt = p2_score_ff + 5'd1;
                     if(state_ff == GAME) state_nxt = SERVE;
+                    goal_nxt = 1'b1;
                 end
 
                 if(x_ff >= 11'd625) begin
@@ -202,6 +213,7 @@ module game_controller( input clk, rst,
                     x_nxt = 11'd300;
                     p1_score_nxt = p1_score_ff + 5'd1;
                     if(state_ff == GAME) state_nxt = SERVE;
+                    goal_nxt = 1'b1;
                 end
             end
 
@@ -211,11 +223,13 @@ module game_controller( input clk, rst,
                     if(!(y_ff >= 11'd134 && y_ff <= 11'd344)) begin
                         xh_nxt = 1'b1;
                         x_nxt = 11'd31;
+                        wall_nxt = 1'b1;
                     end else if(x_ff <= 11'd15) begin
                         xh_nxt = 1'b1;
                         x_nxt = 11'd340;
                         p2_score_nxt = p2_score_ff + 5'd1;
                         if(state_ff == GAME) state_nxt = SERVE;
+                        goal_nxt = 1'b1;
                     end
                 end
 
@@ -223,11 +237,13 @@ module game_controller( input clk, rst,
                     if(!(y_ff >= 11'd134 && y_ff <= 11'd344)) begin
                         xh_nxt = 1'b0;
                         x_nxt = 11'd609;
+                        wall_nxt = 1'b1;
                     end else if(x_ff >= 11'd625) begin
                         xh_nxt = 1'b0;
                         x_nxt = 11'd300;
                         p1_score_nxt = p1_score_ff + 5'd1;
                         if(state_ff == GAME) state_nxt = SERVE;
+                        goal_nxt = 1'b1;
                     end
                 end
 
@@ -237,12 +253,13 @@ module game_controller( input clk, rst,
                 if(x_ff <= 11'd30) begin
                     xh_nxt = 1'b1;
                     x_nxt = 11'd31;
-                    turn_nxt = turn_ff + 1'b1;
                     rand_pos_nxt = rand_pos_ff + 2'd1;
+                    wall_nxt = 1'b1;
                 end
 
                 if(x_ff >= 625) begin
                     x_nxt = 11'd280;
+                    goal_nxt = 1'b1;
                     if(turn_ff) begin
                         p1_score_nxt = p1_score_ff + 5'd1;
                         if(state_ff == GAME) state_nxt = SERVE;
@@ -258,12 +275,14 @@ module game_controller( input clk, rst,
                     xh_nxt = 1'b1;
                     x_nxt = 11'd31;
                     rand_pos_nxt = rand_pos_ff + 2'd1;
+                    wall_nxt = 1'b1;
                 end
 
                 if(x_ff >= 11'd625) begin
                     x_nxt = 11'd150;
                     p2_score_nxt = p2_score_ff + 5'd1;
                     if(state_ff == GAME) state_nxt = SERVE;
+                    goal_nxt = 1'b1;
                 end
 
                 //p1 score to be added with paddle
@@ -277,12 +296,14 @@ module game_controller( input clk, rst,
                 xh_nxt = 1'b1;
                 x_nxt = 11'd46;
                 rand_pos_nxt = rand_pos_ff + 2'd1;
+                hit_nxt = 1'b1;
             end
 
             if(x_ff == 11'd595 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat) begin
                 xh_nxt = 1'b0;
                 x_nxt = 11'd594;
                 rand_pos_nxt = rand_pos_ff + 2'd1;
+                hit_nxt = 1'b1;
             end
         end
 
@@ -292,6 +313,7 @@ module game_controller( input clk, rst,
                 xh_nxt = 1'b1;
                 x_nxt = 11'd490;
                 rand_pos_nxt = rand_pos_ff + 2'd1;
+                hit_nxt = 1'b1;
 
                 if(y_ff < 11'd240) begin
                     yh_nxt = 1'b1;
@@ -304,6 +326,7 @@ module game_controller( input clk, rst,
                 xh_nxt = 1'b0;
                 x_nxt = 11'd154;
                 rand_pos_nxt = rand_pos_ff + 2'd1;
+                hit_nxt = 1'b1;
 
                 if(y_ff < 11'd240) begin
                     yh_nxt = 1'b1;
@@ -319,6 +342,8 @@ module game_controller( input clk, rst,
                 xh_nxt = 1'b0;
                 x_nxt = 11'd504;
                 rand_pos_nxt = rand_pos_ff + 2'd1;
+                turn_nxt = turn_ff + 1'b1;
+                hit_nxt = 1'b1;
             end
         end
 
@@ -328,10 +353,12 @@ module game_controller( input clk, rst,
                 xh_nxt = 1'b0;
                 x_nxt = 11'd488;
                 rand_pos_nxt = rand_pos_ff + 2'd1;
+                turn_nxt = turn_ff + 1'b1;
                 if(mode_ff== 2'b11) begin
                     p1_score_nxt = p1_score_ff + 5'd1;
                     if(p1_score_ff >= max_score) state_nxt = SERVE;
                 end
+                hit_nxt = 1'b1;
             end
         end
 
@@ -339,11 +366,13 @@ module game_controller( input clk, rst,
         if(y_ff <= 11'd30) begin
             yh_nxt = 1'b1;
             y_nxt = 11'd31;
+            wall_nxt = 1'b1;
         end
 
         if(y_ff >= 11'd450) begin
             yh_nxt = 1'b0;
             y_nxt = 11'd445;
+            wall_nxt = 1'b1;
         end
         
     end
@@ -353,6 +382,10 @@ module game_controller( input clk, rst,
             state_ff <= START;
             mode_ff <= 2'b00;
             start_state_ff <= 1'b0;
+
+            hit_ff <= 1'b0;
+            wall_ff <= 1'b0;
+            goal_ff <= 1'b0;
 
             p1_score_ff <= 5'd0;
             p2_score_ff <= 5'd0;
@@ -384,6 +417,10 @@ module game_controller( input clk, rst,
             if(state_ff == START)
                 start_state_ff <= 1'b1;
             else start_state_ff <= 1'b0;
+
+            hit_ff <= hit_nxt;
+            wall_ff <= wall_nxt;
+            goal_ff <= goal_nxt;
 
             win1_ff <= win1_nxt;
             win2_ff <= win2_nxt;
