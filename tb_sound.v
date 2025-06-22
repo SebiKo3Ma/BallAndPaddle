@@ -1,9 +1,9 @@
 module tb_sound;
     reg clk, rst;
     reg hit, wall, goal;
-    wire hit_out, wall_out, goal_out;
+    wire sound;
 
-    sound_output sound_output(clk, rst, hit, wall, goal, hit_out, wall_out, goal_out);
+    sound_output sound_output(clk, rst, hit, wall, goal, sound);
 
     initial begin
         clk = 1'b0;
