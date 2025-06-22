@@ -418,9 +418,15 @@ module game_controller( input clk, rst,
                 start_state_ff <= 1'b1;
             else start_state_ff <= 1'b0;
 
-            hit_ff <= hit_nxt;
-            wall_ff <= wall_nxt;
-            goal_ff <= goal_nxt;
+            if(state_ff != ENDG) begin
+                hit_ff <= hit_nxt;
+                wall_ff <= wall_nxt;
+                goal_ff <= goal_nxt;
+            end else begin
+                hit_ff <= 1'b0;
+                wall_ff <= 1'b0;
+                goal_ff <= 1'b0;
+            end
 
             win1_ff <= win1_nxt;
             win2_ff <= win2_nxt;
