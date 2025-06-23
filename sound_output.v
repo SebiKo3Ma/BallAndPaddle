@@ -9,7 +9,7 @@ module sound_output(input clk, rst, hit, wall, goal, output sound);
     assign sound = sound_ff;
 
     always @* begin
-        counter_nxt = counter_ff + 25'd1;
+        counter_nxt = counter_ff + 24'd1;
         hit_nxt = hit_ff;
         wall_nxt = wall_ff;
         goal_nxt = goal_ff;
@@ -19,7 +19,7 @@ module sound_output(input clk, rst, hit, wall, goal, output sound);
         if(hit) hit_nxt = 1'b1;
         if(wall) wall_nxt = 1'b1;
         if(goal) goal_nxt = 1'b1;
-        if(hit || wall || goal) counter_nxt <= 25'b1;
+        if(hit || wall || goal) counter_nxt <= 24'b1;
 
         if(!counter_ff) begin
             hit_nxt = 1'b0;
@@ -28,7 +28,7 @@ module sound_output(input clk, rst, hit, wall, goal, output sound);
         end
 
         if(hit_ff || wall_ff || goal_ff) begin
-            pulse_nxt = pulse_ff + 1;
+            pulse_nxt = pulse_ff + 17'd1;
             if(hit_ff) begin
                 if(pulse_ff == 17'd51546)
                     pulse_nxt = 17'd0;
@@ -52,7 +52,7 @@ module sound_output(input clk, rst, hit, wall, goal, output sound);
 
     always @(posedge clk or posedge rst) begin
         if(rst) begin
-            counter_ff <= 25'd0;
+            counter_ff <= 24'd0;
             hit_ff <= 1'b0;
             wall_ff <= 1'b0;
             goal_ff <= 1'b0;

@@ -29,7 +29,7 @@ always @* begin
     wall_nxt = wall_ff;
 
     if(!hard_mode) begin
-        if(hit || (mode == 2'b10 && wall)) err_count_nxt = err_count_ff + 1;
+        if(hit || (mode == 2'b10 && wall)) err_count_nxt = err_count_ff + 5'd1;
     end else err_count_nxt = 1'b0;
 
     if(start_state) begin
