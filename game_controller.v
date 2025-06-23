@@ -1,5 +1,5 @@
 module game_controller( input clk, rst,     
-                        input  [10:0] p1_in,      // y input for player 1
+                        input  [9:0] p1_in,      // y input for player 1
                                       p2_in,      // y input for player 2
                         input  [1:0]  mode,       // game mode: 00-tennis, 01-soccer, 10-squash, 11-practice
                                       max_score,  // score needed to win: 00-10, 01-15, 10-20, 11-30
@@ -19,7 +19,7 @@ module game_controller( input clk, rst,
                         output [1:0]  mode_out,
                         output [4:0]  p1_score,   // score for player 1
                                       p2_score,   // score for player 2
-                        output [10:0] p1_y,       // vertical position of player 1
+                        output [9:0] p1_y,       // vertical position of player 1
                                       p2_y,       // vertical position of player 2
                                       ball_x,     // horizontal position of ball
                                       ball_y);    // vertical position of ball
@@ -35,7 +35,7 @@ module game_controller( input clk, rst,
     reg hit_ff, hit_nxt, wall_ff, wall_nxt, goal_ff, goal_nxt;
 
     //ball registers
-    reg [10:0] x_ff, x_nxt, y_ff, y_nxt; //ball position flip-flops
+    reg [9:0] x_ff, x_nxt, y_ff, y_nxt; //ball position flip-flops
     reg xh_ff, xh_nxt, yh_ff, yh_nxt;    //ball heading flip-flops
     reg [16:0] counter_ff, counter_nxt;  //counter for ball movement speed
     reg mini_counter_ff, mini_counter_nxt;
@@ -142,8 +142,8 @@ module game_controller( input clk, rst,
                 p2_score_nxt = 5'b0;
                 win1_nxt = 1'b0;
                 win2_nxt = 1'b0;
-                x_nxt = 11'd60;
-                y_nxt = 11'd60;
+                x_nxt = 10'd60;
+                y_nxt = 10'd60;
                 xh_nxt = 1'b1;
                 yh_nxt = 1'b1;
                 ball_en_nxt = 1'b0;
@@ -182,17 +182,17 @@ module game_controller( input clk, rst,
             move_counter_nxt = move_counter_ff + 1'b1;
 
             if(xh_ff) begin
-                x_nxt = x_ff + 11'd1;
+                x_nxt = x_ff + 10'd1;
             end else begin
-                x_nxt = x_ff - 11'd1;
+                x_nxt = x_ff - 10'd1;
             end
             
             if(!angle || move_counter_ff == angles(rand_pos_ff)) begin
                 move_counter_nxt = 2'b00;
                 if(yh_ff) begin
-                    y_nxt = y_ff + 11'd1;
+                    y_nxt = y_ff + 10'd1;
                 end else begin
-                    y_nxt = y_ff - 11'd1;
+                    y_nxt = y_ff - 10'd1;
                 end
             end
         end
@@ -200,17 +200,17 @@ module game_controller( input clk, rst,
         case(mode_ff)
             2'b00 : begin //tennis collisions and score
                 //horizontal collisions
-                if(x_ff <= 11'd15) begin
+                if(x_ff <= 10'd15) begin
                     xh_nxt = 1'b1;
-                    x_nxt = 11'd160;
+                    x_nxt = 10'd160;
                     p2_score_nxt = p2_score_ff + 5'd1;
                     if(state_ff == GAME) state_nxt = SERVE;
                     goal_nxt = 1'b1;
                 end
 
-                if(x_ff >= 11'd625) begin
+                if(x_ff >= 10'd625) begin
                     xh_nxt = 1'b0;
-                    x_nxt = 11'd480;
+                    x_nxt = 10'd480;
                     p1_score_nxt = p1_score_ff + 5'd1;
                     if(state_ff == GAME) state_nxt = SERVE;
                     goal_nxt = 1'b1;
@@ -219,28 +219,28 @@ module game_controller( input clk, rst,
 
             2'b01 : begin //football collisions and score
                 //side border collisions
-                if(x_ff <= 11'd30) begin
-                    if(!(y_ff >= 11'd134 && y_ff <= 11'd344)) begin
+                if(x_ff <= 10'd30) begin
+                    if(!(y_ff >= 10'd134 && y_ff <= 10'd344)) begin
                         xh_nxt = 1'b1;
-                        x_nxt = 11'd31;
+                        x_nxt = 10'd31;
                         wall_nxt = 1'b1;
-                    end else if(x_ff <= 11'd15) begin
+                    end else if(x_ff <= 10'd15) begin
                         xh_nxt = 1'b1;
-                        x_nxt = 11'd160;
+                        x_nxt = 10'd160;
                         p2_score_nxt = p2_score_ff + 5'd1;
                         if(state_ff == GAME) state_nxt = SERVE;
                         goal_nxt = 1'b1;
                     end
                 end
 
-                if(x_ff >= 11'd610) begin
-                    if(!(y_ff >= 11'd134 && y_ff <= 11'd344)) begin
+                if(x_ff >= 10'd610) begin
+                    if(!(y_ff >= 10'd134 && y_ff <= 10'd344)) begin
                         xh_nxt = 1'b0;
-                        x_nxt = 11'd609;
+                        x_nxt = 10'd609;
                         wall_nxt = 1'b1;
-                    end else if(x_ff >= 11'd625) begin
+                    end else if(x_ff >= 10'd625) begin
                         xh_nxt = 1'b0;
-                        x_nxt = 11'd480;
+                        x_nxt = 10'd480;
                         p1_score_nxt = p1_score_ff + 5'd1;
                         if(state_ff == GAME) state_nxt = SERVE;
                         goal_nxt = 1'b1;
@@ -250,15 +250,15 @@ module game_controller( input clk, rst,
             end
 
             2'b10 : begin //squash collision and scoring
-                if(x_ff <= 11'd30) begin
+                if(x_ff <= 10'd30) begin
                     xh_nxt = 1'b1;
-                    x_nxt = 11'd31;
+                    x_nxt = 10'd31;
                     rand_pos_nxt = rand_pos_ff + 2'd1;
                     wall_nxt = 1'b1;
                 end
 
                 if(x_ff >= 625) begin
-                    x_nxt = 11'd100;
+                    x_nxt = 10'd100;
                     goal_nxt = 1'b1;
                     if(turn_ff) begin
                         p1_score_nxt = p1_score_ff + 5'd1;
@@ -271,15 +271,15 @@ module game_controller( input clk, rst,
             end
 
             2'b11 : begin //squash practice collision and scoring
-                if(x_ff <= 11'd30) begin
+                if(x_ff <= 10'd30) begin
                     xh_nxt = 1'b1;
-                    x_nxt = 11'd31;
+                    x_nxt = 10'd31;
                     rand_pos_nxt = rand_pos_ff + 2'd1;
                     wall_nxt = 1'b1;
                 end
 
-                if(x_ff >= 11'd625) begin
-                    x_nxt = 11'd100;
+                if(x_ff >= 10'd625) begin
+                    x_nxt = 10'd100;
                     p2_score_nxt = p2_score_ff + 5'd1;
                     if(state_ff == GAME) state_nxt = SERVE;
                     goal_nxt = 1'b1;
@@ -292,16 +292,16 @@ module game_controller( input clk, rst,
         //paddle collisions
         //player main paddles
         if(mode_ff== 2'b00 || mode_ff== 2'b01) begin //active in tennis and football
-            if(x_ff >= 11'd40 && x_ff < 11'd49 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat) begin
+            if(x_ff >= 10'd40 && x_ff < 10'd49 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat) begin
                 xh_nxt = 1'b1;
-                x_nxt = 11'd50;
+                x_nxt = 10'd50;
                 rand_pos_nxt = rand_pos_ff + 2'd1;
                 hit_nxt = 1'b1;
             end
 
-            if(x_ff >= 11'd591 && x_ff < 11'd600 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat) begin
+            if(x_ff >= 10'd591 && x_ff < 10'd600 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat) begin
                 xh_nxt = 1'b0;
-                x_nxt = 11'd590;
+                x_nxt = 10'd590;
                 rand_pos_nxt = rand_pos_ff + 2'd1;
                 hit_nxt = 1'b1;
             end
@@ -309,26 +309,26 @@ module game_controller( input clk, rst,
 
         //player football forwards
         if(mode_ff== 2'b01) begin //active in football mode
-            if(x_ff >= 11'd484 && x_ff < 11'd494 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat) begin
+            if(x_ff >= 10'd484 && x_ff < 10'd494 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat) begin
                 xh_nxt = 1'b1;
-                x_nxt = 11'd495;
+                x_nxt = 10'd495;
                 rand_pos_nxt = rand_pos_ff + 2'd1;
                 hit_nxt = 1'b1;
 
-                if(y_ff < 11'd240) begin
+                if(y_ff < 10'd240) begin
                     yh_nxt = 1'b1;
                 end else begin
                     yh_nxt = 1'b0;
                 end
             end
 
-            if(x_ff >= 11'd146 && x_ff < 11'd156 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat) begin
+            if(x_ff >= 10'd146 && x_ff < 10'd156 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat) begin
                 xh_nxt = 1'b0;
-                x_nxt = 11'd145;
+                x_nxt = 10'd145;
                 rand_pos_nxt = rand_pos_ff + 2'd1;
                 hit_nxt = 1'b1;
 
-                if(y_ff < 11'd240) begin
+                if(y_ff < 10'd240) begin
                     yh_nxt = 1'b1;
                 end else begin
                     yh_nxt = 1'b0;
@@ -338,9 +338,9 @@ module game_controller( input clk, rst,
 
         //player 2 squash paddle
         if(mode_ff== 2'b10) begin //active in squash mode
-            if(x_ff >= 11'd496 && x_ff < 11'd506 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat && turn_ff) begin
+            if(x_ff >= 10'd496 && x_ff < 10'd506 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat && turn_ff) begin
                 xh_nxt = 1'b0;
-                x_nxt = 11'd479;
+                x_nxt = 10'd479;
                 rand_pos_nxt = rand_pos_ff + 2'd1;
                 turn_nxt = turn_ff + 1'b1;
                 hit_nxt = 1'b1;
@@ -349,9 +349,9 @@ module game_controller( input clk, rst,
 
         //player 1 squash paddle
         if(mode_ff== 2'b10 || mode_ff== 2'b11) begin //active in squash and practice mode
-            if(x_ff >= 11'd480 && x_ff < 11'd490 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat && !turn_ff) begin
+            if(x_ff >= 10'd480 && x_ff < 10'd490 && y_ff >= p1_in - 4 - bat && y_ff <= p1_in + 4 + bat && !turn_ff) begin
                 xh_nxt = 1'b0;
-                x_nxt = 11'd479;
+                x_nxt = 10'd479;
                 rand_pos_nxt = rand_pos_ff + 2'd1;
                 if(mode == 2'b10) turn_nxt = turn_ff + 1'b1;
                 if(mode_ff== 2'b11) begin
@@ -363,15 +363,15 @@ module game_controller( input clk, rst,
         end
 
         //vertical collisions
-        if(y_ff <= 11'd30) begin
+        if(y_ff <= 10'd30) begin
             yh_nxt = 1'b1;
-            y_nxt = 11'd31;
+            y_nxt = 10'd31;
             wall_nxt = 1'b1;
         end
 
-        if(y_ff >= 11'd450) begin
+        if(y_ff >= 10'd450) begin
             yh_nxt = 1'b0;
-            y_nxt = 11'd445;
+            y_nxt = 10'd445;
             wall_nxt = 1'b1;
         end
         
@@ -398,8 +398,8 @@ module game_controller( input clk, rst,
             mini_counter_ff <= 1'b1;
             move_counter_ff <= 1'b1;
             rand_pos_ff <= 5'd0;
-            x_ff <= 11'd60;
-            y_ff <= 11'd60;
+            x_ff <= 10'd60;
+            y_ff <= 10'd60;
             xh_ff <= 1'b1;
             yh_ff <= 1'b1;
             ball_en_ff <= 1'b0;

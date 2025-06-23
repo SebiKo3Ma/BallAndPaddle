@@ -7,7 +7,7 @@ module video_encoder(input        clk, rst,
                      input [1:0]  mode,
                      input [4:0]  p1_score,
                                   p2_score,
-                     input [10:0] p1_y,
+                     input [9:0] p1_y,
                                   p2_y,
                                   ball_x,
                                   ball_y,
@@ -43,7 +43,7 @@ module video_encoder(input        clk, rst,
     segments_lut segr(p2_score, scr);
 
     function automatic [2:0] column;
-        input [10:0] tlx;
+        input [9:0] tlx;
         input [6:0] size, size2, size3, size4, size5;
         begin
             if(x >= tlx && x < tlx + size) begin
@@ -65,7 +65,7 @@ module video_encoder(input        clk, rst,
     endfunction
     
     function automatic letter_data;
-        input [10:0] tlx, tly, x, y;
+        input [9:0] tlx, tly, x, y;
         input [4:0] letter;
         input [3:0] size;
         
@@ -507,16 +507,16 @@ module video_encoder(input        clk, rst,
         end
 
         
-        //if(x >= 80  && x < 100) px_data_nxt = letter_data(11'd80 , 11'd80, x, y, 5'd12, 4'd3);
+        //if(x >= 80  && x < 100) px_data_nxt = letter_data(10'd80 , 10'd80, x, y, 5'd12, 4'd3);
 
         //track squash turns
         if(mode == 2'b10) begin
-            if(x >= 550  && x < 570 && y >= 50 && y < 70) px_data_nxt = letter_data(11'd550 , 11'd50, x, y, 5'd15, 4'd3);
+            if(x >= 550  && x < 570 && y >= 50 && y < 70) px_data_nxt = letter_data(10'd550 , 10'd50, x, y, 5'd15, 4'd3);
             if(x >= 570  && x < 590 && y >= 50 && y < 70) begin
                 if(!turn) begin
-                    px_data_nxt = letter_data(11'd570 , 11'd50, x, y, 5'd30, 4'd3);
+                    px_data_nxt = letter_data(10'd570 , 10'd50, x, y, 5'd30, 4'd3);
                 end else begin
-                    px_data_nxt = letter_data(11'd570 , 11'd50, x, y, 5'd31, 4'd3);
+                    px_data_nxt = letter_data(10'd570 , 10'd50, x, y, 5'd31, 4'd3);
                 end
             end                 
         end
@@ -525,55 +525,55 @@ module video_encoder(input        clk, rst,
 
         //first player
         if(p1_win || p2_win) begin
-            if(x >= 120 && x < 160 && y >= 190 && y < 240) px_data_nxt = letter_data(11'd120, 11'd190, x, y, 5'd24, 4'd6);
-            if(x >= 160 && x < 200 && y >= 190 && y < 240) px_data_nxt = letter_data(11'd160, 11'd190, x, y, 5'd14, 4'd6);
-            if(x >= 200 && x < 240 && y >= 190 && y < 240) px_data_nxt = letter_data(11'd200, 11'd190, x, y, 5'd20, 4'd6);
+            if(x >= 120 && x < 160 && y >= 190 && y < 240) px_data_nxt = letter_data(10'd120, 10'd190, x, y, 5'd24, 4'd6);
+            if(x >= 160 && x < 200 && y >= 190 && y < 240) px_data_nxt = letter_data(10'd160, 10'd190, x, y, 5'd14, 4'd6);
+            if(x >= 200 && x < 240 && y >= 190 && y < 240) px_data_nxt = letter_data(10'd200, 10'd190, x, y, 5'd20, 4'd6);
 
             if(p1_win) begin
-                if(x >= 114 && x < 154 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd114, 11'd240, x, y, 5'd22, 4'd6);
-                if(x >= 154 && x < 194 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd154, 11'd240, x, y, 5'd8,  4'd6);
-                if(x >= 194 && x < 234 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd194, 11'd240, x, y, 5'd13, 4'd6);
-                if(x >= 234 && x < 274 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd234, 11'd240, x, y, 5'd26, 4'd6);
+                if(x >= 114 && x < 154 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd114, 10'd240, x, y, 5'd22, 4'd6);
+                if(x >= 154 && x < 194 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd154, 10'd240, x, y, 5'd8,  4'd6);
+                if(x >= 194 && x < 234 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd194, 10'd240, x, y, 5'd13, 4'd6);
+                if(x >= 234 && x < 274 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd234, 10'd240, x, y, 5'd26, 4'd6);
             end else begin
-                if(x >=  92 && x < 132 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd92 , 11'd240, x, y, 5'd11, 4'd6);
-                if(x >= 132 && x < 172 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd132, 11'd240, x, y, 5'd14, 4'd6);
-                if(x >= 172 && x < 212 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd172, 11'd240, x, y, 5'd18, 4'd6);
-                if(x >= 212 && x < 252 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd212, 11'd240, x, y, 5'd4,  4'd6);
-                if(x >= 252 && x < 292 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd252, 11'd240, x, y, 5'd26, 4'd6);
+                if(x >=  92 && x < 132 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd92 , 10'd240, x, y, 5'd11, 4'd6);
+                if(x >= 132 && x < 172 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd132, 10'd240, x, y, 5'd14, 4'd6);
+                if(x >= 172 && x < 212 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd172, 10'd240, x, y, 5'd18, 4'd6);
+                if(x >= 212 && x < 252 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd212, 10'd240, x, y, 5'd4,  4'd6);
+                if(x >= 252 && x < 292 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd252, 10'd240, x, y, 5'd26, 4'd6);
             end
 
             if(mode != 2'b11) begin
-                if(x >= 410 && x < 450 && y >= 190 && y < 240) px_data_nxt = letter_data(11'd410, 11'd190, x, y, 5'd24, 4'd6);
-                if(x >= 450 && x < 490 && y >= 190 && y < 240) px_data_nxt = letter_data(11'd450, 11'd190, x, y, 5'd14, 4'd6);
-                if(x >= 490 && x < 530 && y >= 190 && y < 240) px_data_nxt = letter_data(11'd490, 11'd190, x, y, 5'd20, 4'd6);
+                if(x >= 410 && x < 450 && y >= 190 && y < 240) px_data_nxt = letter_data(10'd410, 10'd190, x, y, 5'd24, 4'd6);
+                if(x >= 450 && x < 490 && y >= 190 && y < 240) px_data_nxt = letter_data(10'd450, 10'd190, x, y, 5'd14, 4'd6);
+                if(x >= 490 && x < 530 && y >= 190 && y < 240) px_data_nxt = letter_data(10'd490, 10'd190, x, y, 5'd20, 4'd6);
 
                 if(p2_win) begin
-                    if(x >= 404 && x < 444 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd404, 11'd240, x, y, 5'd22, 4'd6);
-                    if(x >= 444 && x < 484 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd444, 11'd240, x, y, 5'd8,  4'd6);
-                    if(x >= 484 && x < 524 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd484, 11'd240, x, y, 5'd13, 4'd6);
-                    if(x >= 524 && x < 564 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd524, 11'd240, x, y, 5'd26, 4'd6);
+                    if(x >= 404 && x < 444 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd404, 10'd240, x, y, 5'd22, 4'd6);
+                    if(x >= 444 && x < 484 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd444, 10'd240, x, y, 5'd8,  4'd6);
+                    if(x >= 484 && x < 524 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd484, 10'd240, x, y, 5'd13, 4'd6);
+                    if(x >= 524 && x < 564 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd524, 10'd240, x, y, 5'd26, 4'd6);
                 end else begin
-                    if(x >= 382 && x < 422 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd382, 11'd240, x, y, 5'd11, 4'd6);
-                    if(x >= 422 && x < 462 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd422, 11'd240, x, y, 5'd14, 4'd6);
-                    if(x >= 462 && x < 502 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd462, 11'd240, x, y, 5'd18, 4'd6);
-                    if(x >= 502 && x < 542 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd502, 11'd240, x, y, 5'd4,  4'd6);
-                    if(x >= 542 && x < 582 && y >= 240 && y < 290) px_data_nxt = letter_data(11'd542, 11'd240, x, y, 5'd26, 4'd6);
+                    if(x >= 382 && x < 422 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd382, 10'd240, x, y, 5'd11, 4'd6);
+                    if(x >= 422 && x < 462 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd422, 10'd240, x, y, 5'd14, 4'd6);
+                    if(x >= 462 && x < 502 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd462, 10'd240, x, y, 5'd18, 4'd6);
+                    if(x >= 502 && x < 542 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd502, 10'd240, x, y, 5'd4,  4'd6);
+                    if(x >= 542 && x < 582 && y >= 240 && y < 290) px_data_nxt = letter_data(10'd542, 10'd240, x, y, 5'd26, 4'd6);
                 end
             end
         end
 
         //instructions
         if(start_state) begin
-            if(x >= 70  && x < 85  && y >= 380 && y < 400) px_data_nxt = letter_data(11'd70 , 11'd380, x, y, 5'd15, 4'd2);
-            if(x >= 85  && x < 100 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd85 , 11'd380, x, y, 5'd17, 4'd2);
-            if(x >= 100 && x < 115 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd100, 11'd380, x, y, 5'd4 , 4'd2);
-            if(x >= 115 && x < 130 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd115, 11'd380, x, y, 5'd18, 4'd2);
-            if(x >= 130 && x < 145 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd130, 11'd380, x, y, 5'd18, 4'd2);
-            if(x >= 160 && x < 175 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd160, 11'd380, x, y, 5'd18, 4'd2);
-            if(x >= 175 && x < 190 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd175, 11'd380, x, y, 5'd19, 4'd2);
-            if(x >= 190 && x < 205 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd190, 11'd380, x, y, 5'd0 , 4'd2);
-            if(x >= 205 && x < 220 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd205, 11'd380, x, y, 5'd17, 4'd2);
-            if(x >= 220 && x < 235 && y >= 380 && y < 400) px_data_nxt = letter_data(11'd220, 11'd380, x, y, 5'd19, 4'd2);
+            if(x >= 70  && x < 85  && y >= 380 && y < 400) px_data_nxt = letter_data(10'd70 , 10'd380, x, y, 5'd15, 4'd2);
+            if(x >= 85  && x < 100 && y >= 380 && y < 400) px_data_nxt = letter_data(10'd85 , 10'd380, x, y, 5'd17, 4'd2);
+            if(x >= 100 && x < 115 && y >= 380 && y < 400) px_data_nxt = letter_data(10'd100, 10'd380, x, y, 5'd4 , 4'd2);
+            if(x >= 115 && x < 130 && y >= 380 && y < 400) px_data_nxt = letter_data(10'd115, 10'd380, x, y, 5'd18, 4'd2);
+            if(x >= 130 && x < 145 && y >= 380 && y < 400) px_data_nxt = letter_data(10'd130, 10'd380, x, y, 5'd18, 4'd2);
+            if(x >= 160 && x < 175 && y >= 380 && y < 400) px_data_nxt = letter_data(10'd160, 10'd380, x, y, 5'd18, 4'd2);
+            if(x >= 175 && x < 190 && y >= 380 && y < 400) px_data_nxt = letter_data(10'd175, 10'd380, x, y, 5'd19, 4'd2);
+            if(x >= 190 && x < 205 && y >= 380 && y < 400) px_data_nxt = letter_data(10'd190, 10'd380, x, y, 5'd0 , 4'd2);
+            if(x >= 205 && x < 220 && y >= 380 && y < 400) px_data_nxt = letter_data(10'd205, 10'd380, x, y, 5'd17, 4'd2);
+            if(x >= 220 && x < 235 && y >= 380 && y < 400) px_data_nxt = letter_data(10'd220, 10'd380, x, y, 5'd19, 4'd2);
         end         
     end     
 

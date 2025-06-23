@@ -1,12 +1,12 @@
 `timescale 1ns/1ns
-module vga_controller(input px_clk, rst, input[29:0] px_data, output[10:0] px_h, px_v, 
+module vga_controller(input px_clk, rst, input[29:0] px_data, output[9:0] px_h, px_v, 
                         output[9:0] RED, GRN, BLU, output HSYNC, VSYNC);
     reg hs_ff, hs_nxt, vs_ff, vs_nxt;
-    reg[10:0] hcount_ff, hcount_nxt;
-    reg[10:0] vcount_ff, vcount_nxt;
+    reg[9:0] hcount_ff, hcount_nxt;
+    reg[9:0] vcount_ff, vcount_nxt;
 
     reg[11:0] h_total, h_total_nxt, v_total, v_total_nxt;
-    reg[10:0] h_data, v_data, h_data_nxt, v_data_nxt;
+    reg[9:0] h_data, v_data, h_data_nxt, v_data_nxt;
     reg[7:0] h_fp, h_bp, h_pw, h_fp_nxt, h_bp_nxt, h_pw_nxt, v_fp, v_bp, v_pw, v_fp_nxt, v_bp_nxt, v_pw_nxt;
     reg polarity, polarity_nxt;
 
@@ -22,7 +22,7 @@ module vga_controller(input px_clk, rst, input[29:0] px_data, output[10:0] px_h,
     always @* begin
         hs_nxt = hs_ff;
         vs_nxt = vs_ff;
-        hcount_nxt = hcount_ff + 11'd1;
+        hcount_nxt = hcount_ff + 10'd1;
         vcount_nxt = vcount_ff;
         polarity_nxt = polarity;
         h_data_nxt = h_data;
@@ -40,7 +40,7 @@ module vga_controller(input px_clk, rst, input[29:0] px_data, output[10:0] px_h,
         //horizontal zero detect
         if(hcount_ff == h_total - 1) begin
             hcount_nxt = 10'd0;
-            vcount_nxt = vcount_ff + 11'd1;
+            vcount_nxt = vcount_ff + 10'd1;
         end
 
         //horizontal sync start
@@ -66,12 +66,12 @@ module vga_controller(input px_clk, rst, input[29:0] px_data, output[10:0] px_h,
             vs_nxt = polarity;
         end
 
-        h_data_nxt = 11'd640;
+        h_data_nxt = 10'd640;
         h_fp_nxt = 8'd16;
         h_pw_nxt = 8'd96;
         h_bp_nxt = 8'd48;
 
-        v_data_nxt = 11'd480;
+        v_data_nxt = 10'd480;
         v_fp_nxt = 8'd10;
         v_pw_nxt = 8'd2;
         v_bp_nxt = 8'd33;

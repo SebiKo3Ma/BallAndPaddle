@@ -7,7 +7,7 @@ module auto_player(
           hard_mode,
           xh, yh,
     input [1:0] mode,
-    input [10:0] bx, by, py,
+    input [9:0] bx, by, py,
     output p, m
 );
 

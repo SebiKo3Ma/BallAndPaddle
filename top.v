@@ -1,5 +1,5 @@
 module top(input clk, rst, ball_speed, serve_type, angle, bat_size, serve, start, en_color, auto, hard_mode, p1p, p1m, p2p, p2m, input[1:0] mode, max_score, output sound, output [9:0] RED, GRN, BLU, output HSYNC, VSYNC, px_clk, blank, aip2m, aip2p, xh, yh);
-    wire [10:0] x, y, p1_y, p2_y, bx, by;
+    wire [9:0] x, y, p1_y, p2_y, bx, by;
     wire px_data_out;
     wire [29:0] px_data_in;
     wire [4:0] score1, score2;

@@ -1,6 +1,6 @@
-module heading_detect(input clk, rst, input [10:0] x, y, output xh, yh);
+module heading_detect(input clk, rst, input [9:0] x, y, output xh, yh);
     reg xh_ff, xh_nxt, yh_ff, yh_nxt;
-    reg [10:0] x_ff, x_nxt, y_ff, y_nxt;
+    reg [9:0] x_ff, x_nxt, y_ff, y_nxt;
 
     assign xh = xh_ff;
     assign yh = yh_ff;
@@ -26,8 +26,8 @@ module heading_detect(input clk, rst, input [10:0] x, y, output xh, yh);
         if(rst) begin
             xh_ff <= 1'b1;
             yh_ff <= 1'b1;
-            x_ff <= 11'd60;
-            y_ff <= 11'd60;
+            x_ff <= 10'd60;
+            y_ff <= 10'd60;
         end else begin
             xh_ff <= xh_nxt;
             yh_ff <= yh_nxt;
