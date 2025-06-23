@@ -73,6 +73,8 @@ module video_encoder(input        clk, rst,
         reg [6:0] size2, size3, size4, size5, size6;
         reg[2:0] col;
 
+        letter_data = 1'b0;
+
         begin
             case(letter)
                 5'd0  : seg = 30'b01110_10001_11111_10001_10001_10001; //A
