@@ -1,4 +1,4 @@
-module top(input clk, rst, ball_speed, serve_type, angle, bat_size, serve, start, en_color, auto, p1p, p1m, p2p, p2m, input[1:0] mode, max_score, output sound, output [9:0] RED, GRN, BLU, output HSYNC, VSYNC, px_clk, blank, aip2m, aip2p, xh, yh);
+module top(input clk, rst, ball_speed, serve_type, angle, bat_size, serve, start, en_color, auto, hard_mode, p1p, p1m, p2p, p2m, input[1:0] mode, max_score, output sound, output [9:0] RED, GRN, BLU, output HSYNC, VSYNC, px_clk, blank, aip2m, aip2p, xh, yh);
     wire [10:0] x, y, p1_y, p2_y, bx, by;
     wire px_data_out;
     wire [29:0] px_data_in;
@@ -17,7 +17,7 @@ module top(input clk, rst, ball_speed, serve_type, angle, bat_size, serve, start
     debouncer d4(px_clk, rst, p2m, wp2m);
     paddle_controller_btn pctrl(clk, rst, wp1p, wp1m, or2p, or2m, bat_size, p1_y, p2_y);
     heading_detect heading_detect(clk, rst, bx, by, xh, yh);
-    auto_player auto_player(clk, rst, auto, turn, xh, yh, mode, bx, by, p2_y, aip2p, aip2m);
+    auto_player auto_player(clk, rst, auto, turn, hit, wall, start_state, hard_mode, xh, yh, mode, bx, by, p2_y, aip2p, aip2m);
     clk_divider clk_divider(clk, rst, px_clk);
     sound_output sound_output(clk, rst, hit, wall, goal, sound);
     game_controller game_controller(clk, rst, p1_y, p2_y, mode, max_score, ball_speed, serve_type, angle, bat_size, !serve, !start, p1_win, p2_win, turn, start_state, hit, wall, goal, game_mode, score1, score2, p1_y, p2_y, bx, by);
