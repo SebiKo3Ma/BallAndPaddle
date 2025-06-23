@@ -340,7 +340,7 @@ module game_controller( input clk, rst,
         if(mode_ff== 2'b10) begin //active in squash mode
             if(x_ff >= 11'd496 && x_ff < 11'd506 && y_ff >= p2_in - 4 - bat && y_ff <= p2_in + 4 + bat && turn_ff) begin
                 xh_nxt = 1'b0;
-                x_nxt = 11'd495;
+                x_nxt = 11'd479;
                 rand_pos_nxt = rand_pos_ff + 2'd1;
                 turn_nxt = turn_ff + 1'b1;
                 hit_nxt = 1'b1;
