@@ -3,7 +3,7 @@ module color_module(
                   px_data,
                   enable,
     input   [1:0] mode,
-    input  [10:0] x, y,
+    input  [9:0] x, y,
     output [29:0] color_data);
 
     assign color_data = color_data_ff;
