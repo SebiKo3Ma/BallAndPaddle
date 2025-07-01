@@ -1,4 +1,4 @@
-module paddle_controller_btn(input clk, rst, p2p, p2m, bat_size, output[9:0] p2_y);
+module paddle_controller(input clk, rst, p, m, bat_size, output[9:0] p2_y);
     reg [16:0] counter_ff, counter_nxt;
     reg [9:0] p2_ff, p2_nxt;
 
@@ -10,11 +10,11 @@ module paddle_controller_btn(input clk, rst, p2p, p2m, bat_size, output[9:0] p2_
 
         if(!counter_ff) begin
 
-            if(!p2p) begin
+            if(!p) begin
                 p2_nxt = p2_ff + 10'd1;
             end
 
-            if(!p2m) begin
+            if(!m) begin
                 p2_nxt = p2_ff - 10'd1;
             end
         end

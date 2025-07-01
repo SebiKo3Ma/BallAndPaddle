@@ -1,5 +1,5 @@
 module game_controller( input clk, rst,     
-                        input  [9:0] p1_in,      // y input for player 1
+                        input  [9:0] p1_in,       // y input for player 1
                                       p2_in,      // y input for player 2
                         input  [1:0]  mode,       // game mode: 00-tennis, 01-soccer, 10-squash, 11-practice
                                       max_score,  // score needed to win: 00-10, 01-15, 10-20, 11-30
@@ -7,28 +7,28 @@ module game_controller( input clk, rst,
                                       serve_type, // auto / manual
                                       angle,      // narrow / wide
                                       bat_size,   // small / large
-                                      serve,      // serve trigger
-                                      start,
-                        output        p1_win,
-                                      p2_win,
-                                      turn,
-                                      start_state,
-                                      hit,
-                                      wall,
-                                      goal,
-                        output [1:0]  mode_out,
+                                      restart,    // game restart
+                                      start,      // game start
+                        output        p1_win,     // player 1 is winner
+                                      p2_win,     // player 2 is winner
+                                      turn,       // what player is next to hit in squash
+                                      start_state,// game is in start state, changes can be made
+                                      hit,        // paddle collision output
+                                      wall,       // wall collision output
+                                      goal,       // goal scored output
+                        output [1:0]  mode_out,   // game mode output, only changes in start state
                         output [4:0]  p1_score,   // score for player 1
                                       p2_score,   // score for player 2
-                        output [9:0] p1_y,       // vertical position of player 1
-                                      p2_y,       // vertical position of player 2
-                                      ball_x,     // horizontal position of ball
+                        output [9:0]  ball_x,     // horizontal position of ball
                                       ball_y);    // vertical position of ball
 
+    //game FSM states
     localparam[1:0] START = 2'b00,
                     GAME  = 2'b01,
                     SERVE = 2'b10,
                     ENDG  = 2'b11;
 
+    //registers for fsm and collisions
     reg [1:0] state_ff, state_nxt;
     reg [1:0] mode_ff, mode_nxt;
     reg start_state_ff;
@@ -68,6 +68,7 @@ module game_controller( input clk, rst,
     assign ball_x = x_ff;
     assign ball_y = y_ff;
 
+    //this function decides the angle of reflection when Angle is HIGH
     function [1:0] angles;
         input [4:0] pos;
 
@@ -111,6 +112,7 @@ module game_controller( input clk, rst,
 
 
     always @* begin
+        //next value starts as current values, ensures it always gets assigned
         state_nxt = state_ff;
         mode_nxt = mode_ff;
         hit_nxt = 1'b0;
@@ -164,12 +166,12 @@ module game_controller( input clk, rst,
                     if(p1_score_ff > p2_score_ff)
                         win1_nxt = 1'b1;
                     else win2_nxt = 1'b1;
-                end else if(serve || !serve_type) state_nxt = GAME;
+                end else if(serve_type) state_nxt = GAME;
             end
 
             ENDG  : begin
                 ball_en_nxt = 1'b1;
-                if(serve) state_nxt = START;
+                if(restart) state_nxt = START;
             end
         endcase
 
