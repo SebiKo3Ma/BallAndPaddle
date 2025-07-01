@@ -6,9 +6,9 @@ module color_module(
     input  [9:0] x, y,
     output [29:0] color_data);
 
-    assign color_data = color_data_ff;
-
     reg [29:0] color_data_ff, color_data_nxt;
+
+    assign color_data = color_data_ff;
 
     always @* begin
         color_data_nxt = color_data_ff;

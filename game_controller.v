@@ -181,12 +181,13 @@ module game_controller( input clk, rst,
         if((!mini_counter_ff || ball_speed) && !counter_ff && ball_en_ff) begin
             move_counter_nxt = move_counter_ff + 1'b1;
 
-            if(xh_ff) begin
+            if(xh_ff) begin //always increase x position
                 x_nxt = x_ff + 10'd1;
             end else begin
                 x_nxt = x_ff - 10'd1;
             end
             
+            //when extra angles are activated, y position increases sometimes
             if(!angle || move_counter_ff == angles(rand_pos_ff)) begin
                 move_counter_nxt = 2'b00;
                 if(yh_ff) begin

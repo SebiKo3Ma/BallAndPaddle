@@ -8,7 +8,7 @@ module adc_reader(input clk, rst, input[8:0] adc, output sel, output[9:0] p1_y, 
     assign sel = sel_ff;
 
     always @* begin
-        sel_nxt = sel_ff ;
+        sel_nxt = sel_ff;
         p1_nxt <= p1_ff;
         p2_nxt <= p2_ff;
         counter_nxt <= counter_ff + 18'd1;

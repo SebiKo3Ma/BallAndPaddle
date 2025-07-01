@@ -77,7 +77,7 @@ always @* begin
         default: error_nxt = 6'd0;
     endcase
 
-    if((mode == 2'b00 && xh) || (mode == 2'b01 && wall_ff) || (mode == 2'b10 && turn)) begin //if ball headed towards AI paddle
+    if((mode == 2'b00 && xh) || (mode == 2'b01 && wall_ff) || (mode == 2'b10 && turn)) begin //if ball headed towards auto paddle
             if(py < by - error_ff) begin
                 p_nxt = 1'b0;
                 m_nxt = 1'b1;

@@ -1,6 +1,6 @@
-module game_controller_tb;
+module tb_game_controller;
     reg clk, rst;
-    reg[10:0] p1_y, p2_y;
+    reg[9:0] p1_y, p2_y;
     reg[1:0] mode, max_score;
     reg ball_speed, serve_type, angle, bat_size, serve, start;
     wire p1_win, p2_win, turn;
@@ -8,7 +8,7 @@ module game_controller_tb;
     wire hit, goal;
     wire [1:0] game_mode;
     wire [4:0] score1, score2;
-    wire [10:0] p1_yo, p2_yo, bx, by;
+    wire [9:0] p1_yo, p2_yo, bx, by;
 
     game_controller game_controller(clk, rst, p1_y, p2_y, mode, max_score, ball_speed, serve_type, angle, bat_size, serve, start, 
                                 p1_win, p2_win, turn, start_state, hit, wall, goal, game_mode, score1, score2, p1_yo, p2_yo, bx, by);
@@ -20,8 +20,8 @@ module game_controller_tb;
 
     initial begin
         rst = 1'b1;
-        p1_y = 11'd240;
-        p2_y = 11'd240;
+        p1_y = 9'd240;
+        p2_y = 9'd240;
         mode = 2'b00;
         max_score = 2'b00;
         ball_speed = 1'b0;
@@ -31,6 +31,13 @@ module game_controller_tb;
         serve = 1'b0;
         start = 1'b1;
         #100 rst = 1'b0;
+        #2000000 mode = 2'b01;
+        #2000000 bat_size = 1'b1;
+        #2000000 max_score = 2'b10;
+        #2000000 angle = 1'b1;
+        #2000000 serve_type = 1'b1;
+        #2000000 ball_speed = 1'b1;
+
     end
 
 endmodule
