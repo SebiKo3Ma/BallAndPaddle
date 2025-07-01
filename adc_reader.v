@@ -14,7 +14,7 @@ module adc_reader(input clk, rst, input[8:0] adc, output sel, output[9:0] p1_y, 
         counter_nxt <= counter_ff + 18'd1;
 
         if(!counter_ff) begin
-            sel_nxt = sel_ff + 1'b1;
+            sel_nxt = sel_ff + 1'b1; //alteratively read potentiometers
             if(sel_ff) begin
                 p2_nxt[8:0] = adc;
                 p2_nxt[9] = 1'b0;

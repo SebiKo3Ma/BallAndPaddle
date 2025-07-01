@@ -1,14 +1,12 @@
 module auto_player(
     input clk, rst, en,
-          turn,
-          hit,
-          wall,
-          start_state,
-          hard_mode,
-          xh, yh,
-    input [1:0] mode,
-    input [9:0] bx, by, py,
-    output p, m
+          turn, hit, wall,  //collision inputs
+          start_state, 
+          hard_mode,        //auto player becomes impossible
+          xh, yh,           //ball heading
+    input [1:0] mode,       //game mode
+    input [9:0] bx, by, py, //ball and paddle current positions
+    output p, m             //increase/decrease paddle y pos
 );
 
 reg p_ff, p_nxt, //plus signal for paddle movement module
@@ -28,10 +26,12 @@ always @* begin
     error_nxt = error_ff;
     wall_nxt = wall_ff;
 
+    //if not in impossible mode, cycle through error margin values
     if(!hard_mode) begin
         if(hit || (mode == 2'b10 && wall)) err_count_nxt = err_count_ff + 5'd1;
     end else err_count_nxt = 1'b0;
 
+    //activates auto after first wall hit in football, prevents forward immediately intercepting it 
     if(start_state) begin
         wall_nxt = 1'b0;
     end
@@ -40,6 +40,7 @@ always @* begin
         wall_nxt = 1'b1;
     end
 
+    //error margin table
     case(err_count_ff)
         5'd0  : error_nxt = 6'd0;
         5'd1  : error_nxt = 6'd5;

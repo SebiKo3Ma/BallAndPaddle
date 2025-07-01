@@ -2,6 +2,7 @@ module segments_lut(input [4:0] score, output [13:0] segments);
     reg[13:0] seg;
     assign segments = seg;
 
+    //2-digit seven segment display values
     always @(score) begin
         case(score)
             5'd0  : seg = 14'b00000000111111;
