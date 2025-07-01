@@ -63,8 +63,6 @@ module game_controller( input clk, rst,
     assign turn = turn_ff;
     assign p1_score = p1_score_ff;
     assign p2_score = p2_score_ff;
-    assign p1_y = p1_in;
-    assign p2_y = p2_in;
     assign ball_x = x_ff;
     assign ball_y = y_ff;
 
